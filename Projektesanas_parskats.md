@@ -13,6 +13,7 @@ Mājinieku uzvaras prognozēšana ar loģistisko regresiju // JakeKandell | Prog
 NBA spēļu uzvarētāja prognozēšana ar loģistisko regresiju // michaelstrohl | Programma izmanto loģistiskās regresijas metodi Jupyter Notebook vidē ar spēļu datiem no 2007. līdz 2020.gadam, lai noteiktu 2021.gada spēļu uzvarētāju prognozes.  | Aprēķinos tiek izmantoti vēsturiskie dati no komandu statistikas - uzbrukuma un aizsardzības vērtējumus, rezultatīvās piespēles, atlēkošo bumbu skaits, kļūdu skaits. Dati tiek izgūti no csv faila, kas paātrina programmas darbību. |  Spēles, kur abu komandu kopējais izspēlēto spēļu skaits nesasniedz 20, netiek ņemtas vērā. Kā arī netiek ņemti vērā katra spēlētāja individuālie sniegumi.
 NBA uzvaru reitinga prognoze // Enayar478 | Programma izmanto lineāro regresiju, lai prognozētu atsevišķu spēlētāju uzvaras reitingu. Pamatā ir detalizēta spēlētāju statistika, uzsverot katra spēlētāja ieguldījumu komandas uzvarās. | Aprēķinos tiek izmantoti dati par konkrētā basketbolista spēlētajām minūtēm, izspēlētajiem uzbrukumiem,  attiecību starp nospēlētajām minūtēm aizsardzībā/uzbrukumā, ietekmi uz komandas izspēlētajiem uzbrukumiem 48 minūšu laikā. | Modelis ir paredzēts spēlētāju reitingu prognozēšanai, nevis spēles iznākumu prognozēšanai.
 
-# Koncepta modelis
+# Konceptu modelis
+
 
 ![image](https://github.com/user-attachments/assets/07d779ea-76dc-407f-b32a-f3283758e19c)
