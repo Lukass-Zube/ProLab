@@ -17,3 +17,12 @@ NBA uzvaru reitinga prognoze // Enayar478 | Programma izmanto lineāro regresiju
 
 
 ![image](https://github.com/user-attachments/assets/07d779ea-76dc-407f-b32a-f3283758e19c)
+
+Lietotājs: Sistēmas galvenais lietotājs.
+Lietotāja saskarne: Nodrošina saskarsmi starp lietotāju un sistēmu.
+Datu avoti: Kur tiek iegūti dati par spēlēm, komandām un spēlētājiem.
+Datu apstrāde: Dati tiek sagatavoti modeļa apmācībai.
+Modeļa apmācība: Algoritms tiek apmācīts, lai atpazītu modeļus datos.
+Prognozēšanas algoritms: Algoritms izdara prognozes.
+Prognozes rezultāti: Parāda prognozes lietotājam.
+Atsauksme: Lietotājs var sniegt atsauksmi, lai uzlabotu sistēmu.
