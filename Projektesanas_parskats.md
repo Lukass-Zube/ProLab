@@ -26,3 +26,13 @@ Modeļa apmācība: Algoritms tiek apmācīts, lai atpazītu modeļus datos.
 Prognozēšanas algoritms: Algoritms izdara prognozes.
 Prognozes rezultāti: Parāda prognozes lietotājam.
 Atsauksme: Lietotājs var sniegt atsauksmi, lai uzlabotu sistēmu.
+
+
+# Tehnoloģiju stack
+
+Satvars: Flask
+Programmēšanas valoda: Python
+Datu bāze: MongoDB
+Tīmekļa serveris: Apatche
+OS: Ubuntu
+Hosting: Azure App Service
