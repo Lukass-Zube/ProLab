@@ -1,4 +1,9 @@
 from nba_api.stats.static import teams
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 def predict_winner(first_team, second_team):
     matching_teams1 = teams.find_teams_by_full_name(first_team)
@@ -7,10 +12,12 @@ def predict_winner(first_team, second_team):
 
     # Check first team
     if not matching_teams1:
+        print(error_message, first_team)
         return error_message, None
-        
+
     # Check second team
     if not matching_teams2:
+        print(error_message, second_team)
         return error_message, None
         
     # Both teams found, get their info
@@ -22,19 +29,17 @@ def predict_winner(first_team, second_team):
     team_id2 = team_info2['id']
     team_name2 = team_info2['full_name']
     
-    # Load and parse team scores from JSON
-    import json
-    with open('team_scores.json', 'r') as f:
-        team_scores = json.load(f)
+    # Connect to MongoDB and query team scores
+    client = MongoClient(os.getenv('MONGO_URI'))
+    db = client['basketball_data']
+    collection = db['teams']
     
     # Find scores for both teams
-    team1_score = None
-    team2_score = None
-    for team in team_scores:
-        if team['TEAM_ID'] == team_id1:
-            team1_score = team['SCORE']
-        if team['TEAM_ID'] == team_id2:
-            team2_score = team['SCORE']
+    team1_data = collection.find_one({'TEAM_ID': team_id1})
+    team2_data = collection.find_one({'TEAM_ID': team_id2})
+    
+    team1_score = team1_data['SCORE'] if team1_data else None
+    team2_score = team2_data['SCORE'] if team2_data else None
             
     # Compare scores and return winner/loser
     if team1_score > team2_score:

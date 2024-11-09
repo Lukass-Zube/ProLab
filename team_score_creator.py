@@ -1,5 +1,14 @@
-import json
+from pymongo import MongoClient
 from nba_api.stats.endpoints import leaguedashteamstats
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+# Connect to MongoDB
+client = MongoClient(os.getenv('MONGO_URI'))
+db = client['basketball_data']
+collection = db['teams']
 
 # Fetch the team stats for the season
 team_stats = leaguedashteamstats.LeagueDashTeamStats(season='2024-25')
@@ -21,9 +30,10 @@ for _, row in stats_df.iterrows():
     }
     teams_scores.append(team_data)
 
-# Write the data to a JSON file
-output_path = 'team_scores.json'  # Save path
-with open(output_path, 'w') as json_file:
-    json.dump(teams_scores, json_file, indent=4)
+# Connect to MongoDB and insert/update team scores
 
-print(f"JSON file created at: {output_path}")
+# Insert or update each team's data
+for team in teams_scores:
+    collection.insert_one(team)
+
+print("Team scores updated in MongoDB database")
