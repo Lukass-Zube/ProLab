@@ -38,8 +38,8 @@ def predict_winner(first_team, second_team):
     team1_data = collection.find_one({'TEAM_ID': team_id1})
     team2_data = collection.find_one({'TEAM_ID': team_id2})
     
-    team1_score = team1_data['SCORE'] if team1_data else None
-    team2_score = team2_data['SCORE'] if team2_data else None
+    team1_score = team1_data['SUM_MINUS_SCORE'] if team1_data else None
+    team2_score = team2_data['SUM_MINUS_SCORE'] if team2_data else None
             
     # Compare scores and return winner/loser
     if team1_score > team2_score:
