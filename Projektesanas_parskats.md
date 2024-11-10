@@ -16,23 +16,22 @@ NBA uzvaru reitinga prognoze // Enayar478 | Programma izmanto lineāro regresiju
 # Konceptu modelis
 
 
-![image](https://github.com/user-attachments/assets/07d779ea-76dc-407f-b32a-f3283758e19c)
+![image](https://github.com/user-attachments/assets/ee632a4d-7e50-4185-b4f5-1a789edc5f96)
 
-Lietotājs: Sistēmas galvenais lietotājs.
-Lietotāja saskarne: Nodrošina saskarsmi starp lietotāju un sistēmu.
-Datu avoti: Kur tiek iegūti dati par spēlēm, komandām un spēlētājiem.
-Datu apstrāde: Dati tiek sagatavoti modeļa apmācībai.
-Modeļa apmācība: Algoritms tiek apmācīts, lai atpazītu modeļus datos.
-Prognozēšanas algoritms: Algoritms izdara prognozes.
-Prognozes rezultāti: Parāda prognozes lietotājam.
-Atsauksme: Lietotājs var sniegt atsauksmi, lai uzlabotu sistēmu.
+Lietotājs: sistēmas galvenais lietotājs <br>
+Basketbola komandas: lietotāja ievadītie basketbola komandu nosaukumi <br>
+Publiska basketbola spēļu datubāze: datubāze, kur tiek izgūta nepieciešamā statistika <br>
+Basketbola spēļu statistika: dati, kas tiek izmantoti prognozes veikšanai <br>
+Prognozēšanas algoritms: atbilstoši iegūtajiem datiem izvēlēts algoritms <br>
+Prognozēšanas rezultāti: algoritma veiktā prognoze <br>
+Prognožu analīze: vizuāls prognožu attēlojums
 
 
-# Tehnoloģiju stack
+# Tehnoloģiju steks
 
-Satvars: Flask
-Programmēšanas valoda: Python
-Datu bāze: MongoDB
-Tīmekļa serveris: Apatche
-OS: Ubuntu
-Hosting: Azure App Service
+Satvars: Flask <br>
+Programmēšanas valoda: Python <br>
+Datu bāze: MongoDB <br>
+Tīmekļa serveris: Apatche <br>
+OS: Ubuntu <br>
+Hosting: Azure App Service <br>
