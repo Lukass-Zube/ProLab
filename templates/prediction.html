@@ -4,14 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prediction Result</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('https://wallpapers.com/images/high/pure-black-background-maobirexh6qi6qi6.webp');
+            background-size: cover;       
+            background-position: center;    
+            background-repeat: no-repeat;   
+            background-attachment: fixed;
+            color: white;
+            flex-direction: column; 
+            text-align: center;
+        }
+
+    </style>
 </head>
 <body>
     <h1>Prediction Result</h1>
     {% if error_message %}
         <p>{{ error_message }}</p>
     {% else %}
-        <p>Wining Team: {{ wining_team }}</p>
-        <p>Losing Team: {{ losing_team }}</p>
+        <p style="text-align: center;">Wining Team: {{ wining_team }}</p>
+        <p style="text-align: center;">Losing Team: {{ losing_team }}</p>
     {% endif %}
 </body>
 </html>
