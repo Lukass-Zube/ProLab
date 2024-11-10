@@ -13,7 +13,7 @@ def prediction():
     if request.method == 'GET':
         return redirect(url_for('home'))
     # Update team scores before making prediction
-    subprocess.run(['python', 'update_team_score.py'])
+    subprocess.run(['python', 'update_game_history.py'])
     
     first_team = request.form.get('first_team')
     second_team = request.form.get('second_team')
