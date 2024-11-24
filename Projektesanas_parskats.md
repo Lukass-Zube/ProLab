@@ -35,3 +35,9 @@ Datu bāze: MongoDB <br>
 Tīmekļa serveris: Apatche <br>
 OS: Ubuntu <br>
 Hosting: Azure App Service <br>
+
+# Lietotāju stāsti
+Lietotājs vēlas prognozēt basketbola spēles rezultātu, jo tas palīdzēs nopelnīt naudu. <br>
+Lietotājs vēlas prognozēt basketbola spēles rezultātu, jo tas palīdzēs trenēt savas analītiskās prasmes, izmantojot komandu statistiku un vēsturiskos datus, lai izveidotu precīzākas prognozes. <br>
+Uzņēmums vēlas prognozēt basketbola spēles rezultātu, jo tas palīdzēs noteikt precīzākas likmes un optimizēt piedāvājumus. <br>
+Sporta organizācija vēlas prognozēt basketbola spēles rezultātu, jo tas palīdzēs analizēt pretinieku spēku. <br>
