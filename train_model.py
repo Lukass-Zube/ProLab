@@ -3,8 +3,11 @@ from dotenv import load_dotenv
 import pandas as pd
 import os
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.compose import ColumnTransformer
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.metrics import mean_squared_error, r2_score
 import joblib
 
 # Load environment variables
@@ -17,14 +20,27 @@ collection = db['games']
 
 # Query the data from MongoDB
 query = list(collection.find({}, {
-    "PLUS_MINUS": 1,
+    "TEAM_ID": 1,
+    "MIN": 1,
     "PTS": 1,
-    "FG_PCT": 1,
     "FGM": 1,
-    "FG3_PCT": 1,
-    "DREB": 1,
+    "FGA": 1,
+    "FG_PCT": 1,
     "FG3M": 1,
-    "WL": 1  # Outcome field, currently "W" or "L"
+    "FG3A": 1,
+    "FG3_PCT": 1,
+    "FTM": 1,
+    "FTA": 1,
+    "FT_PCT": 1,
+    "OREB": 1,
+    "DREB": 1,
+    "REB": 1,
+    "AST": 1,
+    "STL": 1,
+    "BLK": 1,
+    "TOV": 1,
+    "PF": 1,
+    "PLUS_MINUS": 1
 }))
 
 # Convert the data to a DataFrame
@@ -33,33 +49,46 @@ df = pd.DataFrame(query)
 # Drop the _id column if it exists
 if '_id' in df.columns:
     df = df.drop(columns=['_id'])
-# Convert the WL field to a numeric outcome
-df['outcome'] = df['WL'].apply(lambda x: 1 if x == 'W' else 0)
-df.drop(columns=['WL'], inplace=True)
 
-# Drop rows with any missing values (optional)
+# Drop rows with missing values
 df.dropna(inplace=True)
 
 # Split the data into features (X) and target (y)
-X = df.drop(columns=['outcome'])
-y = df['outcome']
+X = df.drop(columns=['PTS'])
+y = df['PTS']
+
+# Define the column transformer for one-hot encoding
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('team_id', OneHotEncoder(handle_unknown='ignore'), ['TEAM_ID']),
+    ],
+    remainder='passthrough'  # Keep other columns as they are
+)
+
+# Create a pipeline with preprocessing and model
+pipeline = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('model', RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42))
+])
 
 # Split the data into training and test sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-# Initialize and train the logistic regression model
-model = LogisticRegression()
-model.fit(X_train, y_train)
+# Train the model
+pipeline.fit(X_train, y_train)
 
 # Make predictions on the test set
-y_pred = model.predict(X_test)
+y_pred = pipeline.predict(X_test)
 
-print(X_test)
 # Evaluate the model
-accuracy = accuracy_score(y_test, y_pred)
-print("Model Accuracy:", accuracy)
-print("Classification Report:\n", classification_report(y_test, y_pred))
+mse = mean_squared_error(y_test, y_pred)
+rmse = mean_squared_error(y_test, y_pred, squared=False)
+r2 = r2_score(y_test, y_pred)
+
+print(f"Mean Squared Error: {mse:.2f}")
+print(f"Root Mean Squared Error: {rmse:.2f}")
+print(f"R² Score: {r2:.2f}")
 
 # Save the model using Joblib
-joblib.dump(model, 'basketball_prediction_model.joblib')
-print("Model saved as 'basketball_prediction_model.joblib'")
+joblib.dump(pipeline, 'basketball_prediction_model.joblib')
+print("\nModel saved as 'basketball_prediction_model.joblib'")
