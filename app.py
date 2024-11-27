@@ -1,16 +1,21 @@
+from datetime import datetime, timezone
+import os
 from flask import Flask, render_template, request, redirect, url_for
+from pymongo import MongoClient
+from update_time import get_last_update_time, set_last_update_time
 from predict import predict_winner
 from custom_errors import TeamNotFoundError
 import subprocess
 import joblib
-import time
+from dotenv import load_dotenv
 
+load_dotenv()
 
 app = Flask(__name__)
 
 model = joblib.load('basketball_prediction_model.joblib')
-last_update_time = 0  # Initialize last update time
-update_interval = 3600
+client = MongoClient(os.getenv('MONGO_URI'))
+db = client['basketball_data']
 
 @app.route('/')
 def home():
@@ -18,22 +23,25 @@ def home():
 
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
-    global last_update_time
-
     if request.method == 'GET':
         return redirect(url_for('home'))
-    
-    # Update team scores before making prediction
-    current_time = time.time()
-    if current_time - last_update_time >= update_interval:
+
+    current_time_utc = datetime.now(timezone.utc)  # Get the current UTC time
+    last_update_time = get_last_update_time(db)
+
+    if last_update_time.tzinfo is None:
+        last_update_time = last_update_time.replace(tzinfo=timezone.utc)
+
+    # Check if the last update was more than an hour ago
+    if (current_time_utc - last_update_time).total_seconds() > 3600:  # 3600 seconds = 1 hour
         subprocess.run(['python', 'update_game_history.py'])
-        last_update_time = current_time  # Update the last run time
+        set_last_update_time(current_time_utc, db)
     
     first_team = request.form.get('first_team')
     second_team = request.form.get('second_team')
     
     try:
-        first_team, first_team_score, second_team, second_team_score = predict_winner(first_team, second_team, model)
+        first_team, first_team_score, second_team, second_team_score = predict_winner(first_team, second_team, model, db)
     except TeamNotFoundError as e:
         return render_template('prediction.html', error_message=str(e))
     

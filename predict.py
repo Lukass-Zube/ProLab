@@ -8,7 +8,7 @@ from custom_errors import TeamNotFoundError
 load_dotenv()
 
 
-def predict_winner(first_team, second_team, model, num_games=10):
+def predict_winner(first_team, second_team, model, db, num_games=10):
     # Find the teams using NBA API
     matching_teams1 = teams.find_teams_by_full_name(first_team)
     matching_teams2 = teams.find_teams_by_full_name(second_team)
@@ -25,10 +25,7 @@ def predict_winner(first_team, second_team, model, num_games=10):
     team_info2 = matching_teams2[0]
     team_id1 = team_info1['id']
     team_id2 = team_info2['id']
-    
-    # Connect to MongoDB to retrieve game-level stats
-    client = MongoClient(os.getenv('MONGO_URI'))
-    db = client['basketball_data']
+
     games_collection = db['games']
 
     # Retrieve the last 10 games between these teams from team1's perspective
