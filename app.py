@@ -2,9 +2,9 @@ from datetime import datetime, timezone
 import os
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
-from update_time import get_last_update_time, set_last_update_time
+from helper.update_time import get_last_update_time, set_last_update_time
 from predict import predict_winner
-from custom_errors import TeamNotFoundError
+from helper.custom_errors import TeamNotFoundError
 import subprocess
 import joblib
 from dotenv import load_dotenv

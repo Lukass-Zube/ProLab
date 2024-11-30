@@ -1,18 +1,16 @@
-from nba_api.stats.static import teams
-from pymongo import MongoClient
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+import joblib
+from nba_api.stats.static import teams
 import pandas as pd
-from custom_errors import TeamNotFoundError
-
-load_dotenv()
+from pymongo import MongoClient
+from helper.custom_errors import TeamNotFoundError, NotEnoughGamesError
 
 
 def predict_winner(first_team, second_team, model, db, num_games=10):
     # Find the teams using NBA API
     matching_teams1 = teams.find_teams_by_full_name(first_team)
     matching_teams2 = teams.find_teams_by_full_name(second_team)
-    error_message = "Team not found"
 
     # Check for team existence
     if not matching_teams1:
@@ -28,20 +26,19 @@ def predict_winner(first_team, second_team, model, db, num_games=10):
 
     games_collection = db['games']
 
-    # Retrieve the last 10 games between these teams from team1's perspective
+    # Retrieve the last num_games games for each team
     team1_games = list(games_collection.find({
-        'TEAM_ID': team_id1,
-        'MATCHUP': {'$regex': f'.*{team_info2["abbreviation"]}.*'}  # Matches both vs. and @ games
+        'TEAM_ID': team_id1
     }).sort("GAME_DATE", -1).limit(num_games))
 
     team2_games = list(games_collection.find({
-        'TEAM_ID': team_id2,
-        'MATCHUP': {'$regex': f'.*{team_info1["abbreviation"]}.*'}  # Matches both vs. and @ games
+        'TEAM_ID': team_id2
     }).sort("GAME_DATE", -1).limit(num_games))
 
-    if (len(team1_games) != num_games or len(team2_games) != num_games):
-        print("Not enough games found for one or both teams")
-        return error_message, None, None, None
+    if (len(team1_games) != num_games):
+        raise NotEnoughGamesError(first_team, num_games)
+    elif (len(team2_games) != num_games):
+        raise NotEnoughGamesError(second_team, num_games)
 
     # Define features to retrieve
     features = [
@@ -66,14 +63,50 @@ def predict_winner(first_team, second_team, model, db, num_games=10):
     'PF',
     'PLUS_MINUS']
 
-    # Calculate average of features for the last 10 games
-    team1_averages = {feature: sum(game[feature] for game in team1_games) / len(team1_games) for feature in features}
+    teams_collection = db['teams']
+
+    def calculate_weighted_averages(games, team_id):
+        total_weight = 0
+        weighted_averages = {feature: 0 for feature in features}
+        
+        for game in games:
+            game_id = game['GAME_ID']
+            game_details = games_collection.find_one({'GAME_ID': game_id, 'TEAM_ID': {'$ne': team_id}})
+            opponent_id = game_details['TEAM_ID']
+            
+            opponent_master_rank = teams_collection.find_one({'TEAM_ID': opponent_id})['MASTER_RANK']
+            
+            # Calculate weight based on opponent's MASTER_RANK
+            weight = 1 / opponent_master_rank if opponent_master_rank != 0 else 1  # Avoid division by zero
+            
+            # Accumulate weighted averages
+            for feature in features:
+                weighted_averages[feature] += game[feature] * weight
+            
+            total_weight += weight
+        
+        # Finalize the weighted averages
+        if total_weight > 0:
+            for feature in features:
+                weighted_averages[feature] /= total_weight
+        
+        return weighted_averages
+
+# Calculate average of features for the last 10 games with weighting
+    team1_averages = calculate_weighted_averages(team1_games, team_id1)
     team1_averages['TEAM_ID'] = team_id1
-    print(team1_averages)
-    
-    team2_averages = {feature: sum(game[feature] for game in team2_games) / len(team2_games) for feature in features}
+
+    team2_averages = calculate_weighted_averages(team2_games, team_id2)
     team2_averages['TEAM_ID'] = team_id2
-    print(team2_averages)
+
+    # Calculate average of features for the last 10 games
+    # team1_averages = {feature: sum(game[feature] for game in team1_games) / len(team1_games) for feature in features}
+    # team1_averages['TEAM_ID'] = team_id1
+    # print(team1_averages)
+    
+    # team2_averages = {feature: sum(game[feature] for game in team2_games) / len(team2_games) for feature in features}
+    # team2_averages['TEAM_ID'] = team_id2
+    # print(team2_averages)
 
     # Calculate differences between average features for prediction
     feature_diffs1 = {f"{feature}": team1_averages[feature] for feature in features}
@@ -95,12 +128,20 @@ def predict_winner(first_team, second_team, model, db, num_games=10):
     return team_info1['full_name'], team1_score, team_info2['full_name'], team2_score
 
 def test_predict_game():
+
+    load_dotenv()
+
+    model = joblib.load('basketball_prediction_model.joblib')
+    client = MongoClient(os.getenv('MONGO_URI'))
+    db = client['basketball_data']
+
+
     # Mock team IDs for testing
-    team_name1 = "Atlanta Hysrdty4352"
+    team_name1 = "Atlanta Hawks"
     team_name2 = "Boston Celtics"
 
     # Call predict_game function
-    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2)
+    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db)
     print(team1_name, team1_score, team2_name, team2_score)
     # Basic assertions
 
@@ -108,14 +149,14 @@ def test_predict_game():
     team_name2 = "Charlotte Hornets"
 
     # Call predict_game function
-    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2)
+    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db)
     print(team1_name, team1_score, team2_name, team2_score)
 
     team_name1 = "Charlotte Hornets"
     team_name2 = "Miami Heat"
 
     # Call predict_game function
-    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2)
+    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db)
     print(team1_name, team1_score, team2_name, team2_score)
 
 
