@@ -73,11 +73,17 @@ def predict_winner(first_team, second_team, model, db, num_games=10):
             game_id = game['GAME_ID']
             game_details = games_collection.find_one({'GAME_ID': game_id, 'TEAM_ID': {'$ne': team_id}})
             opponent_id = game_details['TEAM_ID']
-            
             opponent_master_rank = teams_collection.find_one({'TEAM_ID': opponent_id})['MASTER_RANK']
             
             # Calculate weight based on opponent's MASTER_RANK
-            weight = 1 / opponent_master_rank if opponent_master_rank != 0 else 1  # Avoid division by zero
+            if (game['WL']=="W"):
+                team_won = True
+                weight = 1 / opponent_master_rank if opponent_master_rank != 0 else 1  # Avoid division by zero
+            else:
+                team_won = False
+                weight = 1 - 1 / opponent_master_rank if opponent_master_rank != 0 else 1  # Avoid division by zero
+            
+            
             
             # Accumulate weighted averages
             for feature in features:

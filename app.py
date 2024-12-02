@@ -19,7 +19,9 @@ db = client['basketball_data']
 
 @app.route('/')
 def home():
-    return render_template('form.html')
+    teams_collection = db['teams']
+    teams = list(teams_collection.find({}, {'TEAM_NAME': 1}))  # Fetch team names
+    return render_template('form.html', teams=teams)
 
 @app.route('/prediction', methods=['GET', 'POST'])
 def prediction():
@@ -34,7 +36,9 @@ def prediction():
 
     # Check if the last update was more than an hour ago
     if (current_time_utc - last_update_time).total_seconds() > 3600:  # 3600 seconds = 1 hour
-        subprocess.run(['python', 'update_game_history.py'])
+        subprocess.run(['python', 'nba_api_call/update_game_history.py'])
+        subprocess.run(['python', 'nba_api_call/update_team_score.py'])
+        subprocess.run(['python', 'nba_api_call/create_rank.py'])
         set_last_update_time(current_time_utc, db)
     
     first_team = request.form.get('first_team')

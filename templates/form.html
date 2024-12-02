@@ -31,11 +31,21 @@
 </head>
 <body>
     <form action="/prediction" method="post">
-        <div class="title">NBA score prediction</div> 
-        <label for="first_team">First Team Name:</label><br>
-        <input type="text" id="first_team" name="first_team"><br><br>
-        <label for="second_team">Second Team Name:</label><br>
-        <input type="text" id="second_team" name="second_team"><br><br>
+        <div class="title">NBA Score Prediction</div> 
+        <label for="first_team">First Team:</label><br>
+        <select id="first_team" name="first_team">
+            {% for team in teams %}
+                <option value="{{ team.TEAM_NAME }}">{{ team.TEAM_NAME }}</option>
+            {% endfor %}
+        </select><br><br>
+        
+        <label for="second_team">Second Team:</label><br>
+        <select id="second_team" name="second_team">
+            {% for team in teams %}
+                <option value="{{ team.TEAM_NAME }}">{{ team.TEAM_NAME }}</option>
+            {% endfor %}
+        </select><br><br>
+        
         <input type="submit" value="Submit">
     </form>
 </body>
