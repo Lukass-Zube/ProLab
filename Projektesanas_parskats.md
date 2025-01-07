@@ -37,7 +37,11 @@ OS: Ubuntu <br>
 Hosting: Azure App Service <br>
 
 # Lietotāju stāsti
-Lietotājs vēlas prognozēt basketbola spēles rezultātu, jo tas palīdzēs nopelnīt naudu. <br>
-Lietotājs vēlas prognozēt basketbola spēles rezultātu, jo tas palīdzēs trenēt savas analītiskās prasmes, izmantojot komandu statistiku un vēsturiskos datus, lai izveidotu precīzākas prognozes. <br>
-Uzņēmums vēlas prognozēt basketbola spēles rezultātu, jo tas palīdzēs noteikt precīzākas likmes un optimizēt piedāvājumus. <br>
-Sporta organizācija vēlas prognozēt basketbola spēles rezultātu, jo tas palīdzēs analizēt pretinieku spēku. <br>
+
+| Nr. | Lietotāja stāsti | Izpildīts (Jā/Nē)| Komentārs
+|--|-------|---|-------
+|1.|Lietotājs vēlas saņemt precīzu rezultāta prognozi par basketbola spēlēm, jo tas palīdzēs pieņemt labākus lēmumus likmju likšanā un palielināt ienākumus.|---|-------|
+2.|Lietotājs vēlas, lai dati tiktu attēloti grafiski, jo tas padarīs informāciju vieglāk uztveramu un analizējamu.|---|-------|
+3.|Lietotājs vēlas autentificēties sistēmā, jo tas nodrošinās darījumu un prognožu vēstures saglabāšanu.|---|-------|
+4.|Lietotājs vēlas intuitīvi saprotamu mājas lapu, jo tā nodrošinās vieglu piekļuvi informācijai un uzlabos lietotāja pieredzi.|---|-------|
+5.|Sporta organizācija vēlas prognozēt basketbola spēļu rezultātus, jo tas palīdzēs analizēt pretinieku spēku un uzlabot spēļu stratēģiju.|---|-------|
