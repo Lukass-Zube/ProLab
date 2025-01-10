@@ -11,27 +11,127 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: url('https://wallpapers.com/images/high/pure-black-background-maobirexh6qi6qi6.webp');
-            background-size: cover;       
-            background-position: center;    
-            background-repeat: no-repeat;   
-            background-attachment: fixed;
+            background-color: #000; /* Set a dark background */
             color: white;
-            flex-direction: column; 
+            font-family: Arial, sans-serif;
+            flex-direction: column;
             text-align: center;
         }
 
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        .game, .prediction-game {
+            display: grid;
+            grid-template-columns: 1.5fr 0.5fr 1fr 0.5fr 1.5fr;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .prediction-game {
+            padding: 20px; /* Larger padding for prediction box */
+            border-radius: 8px; /* Larger border radius for prediction box */
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            font-size: 1.4em; /* Slightly larger font size for prediction box */
+        }
+
+        .game-team {
+            text-align: left;
+        }
+
+        .game-team.right {
+            text-align: right;
+            padding-left: 10px; /* Add consistent spacing for right team */
+        }
+
+        .game-score, .prediction-game-score {
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .game-date, .prediction-game-date {
+            text-align: center;
+            font-size: 1em;
+            font-weight: bold;
+            color: gray;
+        }
+
+        .right-panel {
+            margin-top: 30px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: darkorange;
+        }
+        /*
+        .player-image {
+            position: absolute;
+            top: 10%;
+            width: 15%; 
+            max-width: 150px;
+            opacity: 0.8; 
+        }
+
+        .player-image.left {
+            left: 0;
+            transform: translateX(-50%); 
+        }
+
+        .player-image {
+            filter: grayscale(100%);
+        }*/
     </style>
 </head>
 <body>
-    <h1>Prediction Result</h1>
-    {% if error_message %}
-        <p>{{ error_message }}</p>
-    {% else %}
-        <p style="text-align: center;">Wining Team: {{ wining_team }}, score: {{wining_team_score}}</p>
-        <p style="text-align: center;">Losing Team: {{ losing_team }}, score: {{losing_team_score}}</p>
-        <p style="text-align: center;">Probability: {{ prob }}</p>
-    {% endif %}
-    <button onclick="window.location.href='/'">Create New Prediction</button>
+    <!--
+    <img src="https://w1.pngwing.com/pngs/719/518/png-transparent-basketball-nba-chicago-bulls-new-york-knicks-basketball-player-best-nba-player-espy-award-sports-basketball-moves-thumbnail.png" alt="NBA Player" class="player-image left">
+    -->
+    <div class="container">
+        <h2>Last 5 Games</h2>
+        {% for game in last_games %}
+        <div class="game">
+            <div class="game-team">{{ game.team1 }}</div>
+            <div class="game-score">{{ game.team1_score }}</div>
+            <div class="game-date">{{ game.date }}</div>
+            <div class="game-score">{{ game.team2_score }}</div>
+            <div class="game-team">{{ game.team2 }}</div>
+        </div>
+        {% endfor %}
+
+        <!-- Prediction Box -->
+        <div class="prediction-game">
+            <div class="game-team">{{ wining_team }}</div>
+            <div class="prediction-game-score">{{ wining_team_score }}</div>
+            <div class="prediction-game-date">?</div>
+            <div class="prediction-game-score">{{ losing_team_score }}</div>
+            <div class="game-team right">{{ losing_team }}</div>
+        </div>
+
+        <div class="right-panel">
+            <button onclick="window.location.href='/'">Create New Prediction</button>
+        </div>
+    </div>
 </body>
 </html>

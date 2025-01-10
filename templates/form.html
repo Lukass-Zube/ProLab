@@ -19,21 +19,83 @@
         }
 
         form {
-            text-align: center;
+            text-align: left;
+            position: absolute;
+            top: 50%;
+            left: 15%;
+            transform: translateY(-50%);
+            width: 30vw; 
+            min-width: 300px;
         }
 
         .title {
-            margin-bottom: 50px;
-            font-size: 2.5em;
+            margin-bottom: 30px;
+            font-size: 2.5vw;
             font-weight: bold;
+        }
+
+        label {
+            font-size: 1.7vw; 
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        select, input[type="submit"] {
+            font-size: 1.5vw; 
+            padding: 1vw; 
+            margin-bottom: 20px;
+            width: 100%; 
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+        }
+
+        input[type="submit"] {
+            background-color: #f49b16;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease; 
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: scale(1.05); 
+        }
+
+        select option[hidden] {
+            display: none;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: orange;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        button:hover {
+            background-color: darkorange;
         }
     </style>
 </head>
 <body>
     <form action="/prediction" method="post">
         <div class="title">NBA Score Prediction</div> 
+
         <label for="first_team">First Team:</label><br>
         <select id="first_team" name="first_team">
+            <option value="" hidden selected>Choose first team</option>
             {% for team in teams %}
                 <option value="{{ team.TEAM_NAME }}">{{ team.TEAM_NAME }}</option>
             {% endfor %}
@@ -41,12 +103,27 @@
         
         <label for="second_team">Second Team:</label><br>
         <select id="second_team" name="second_team">
+            <option value="" hidden selected>Choose second team</option>
             {% for team in teams %}
                 <option value="{{ team.TEAM_NAME }}">{{ team.TEAM_NAME }}</option>
             {% endfor %}
         </select><br><br>
+
+        <label for="historical_game_number">Number of historical games:</label>
+        <select id="historical_game_number" name="historical_game_number">
+            <option value="" hidden selected>Choose a number</option>
+            <option value=5>5</option>
+            <option value=10>10</option>
+            <option value=15>15</option>
+            <option value=20>20</option>
+            <option value=25>25</option>
+        </select>
         
-        <input type="submit" value="Submit">
+        <button type="submit">Submit</button>
+
+        {% if error_message %}
+            <div class="error">{{ error_message }}</div>
+        {% endif %}
     </form>
 </body>
 </html> 
