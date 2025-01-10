@@ -29,6 +29,15 @@ Prognožu analīze: vizuāls prognožu attēlojums
 
 # Tehnoloģiju steks
 
+| Servera puse | Klienta puse |
+|--------------|--------------|
+| Programmēšanas valoda: Python | Programmēšanas valoda: HTML |
+| Tīmekļa serveris: Apache | Vide: tīmekļa pārlūks |
+| Satvars: Flask | 
+| Datu bāze: MongoDB |
+| OS: Ubuntu |
+| Izvietošana: Azure App Service |
+
 Satvars: Flask <br>
 Programmēšanas valoda: Python <br>
 Datu bāze: MongoDB <br>
