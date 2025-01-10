@@ -38,12 +38,6 @@ Prognožu analīze: vizuāls prognožu attēlojums
 | OS: Ubuntu |
 | Izvietošana: Azure App Service |
 
-Satvars: Flask <br>
-Programmēšanas valoda: Python <br>
-Datu bāze: MongoDB <br>
-Tīmekļa serveris: Apatche <br>
-OS: Ubuntu <br>
-Hosting: Azure App Service <br>
 
 # Lietotāju stāsti
 
