@@ -87,9 +87,66 @@
         button:hover {
             background-color: darkorange;
         }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none; /* Initially hidden */
+        }
+
+        .floating-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: orange;
+            color: black;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none; /* Initially hidden */
+            text-align: center;
+        }
+
+        .floating-message a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .logout-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .logout-button:hover {
+            background-color: darkorange;
+        }
     </style>
 </head>
 <body>
+    <button class="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    <div class="overlay" id="overlay"></div>
+    <div class="floating-message" id="floatingMessage">
+        <p>You need to log in to access this page.</p>
+        <a href="{{ url_for('login') }}">Login</a>
+        <a href="{{ url_for('signup') }}">Sign Up</a>
+    </div>
+
     <form action="/prediction" method="post">
         <div class="title">NBA Score Prediction</div> 
 
@@ -125,5 +182,16 @@
             <div class="error">{{ error_message }}</div>
         {% endif %}
     </form>
+
+    <script>
+        // Check if the user is logged in
+        const isLoggedIn = {{ 'true' if current_user.is_authenticated else 'false' }};
+
+        if (!isLoggedIn) {
+            // Show the overlay and floating message
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('floatingMessage').style.display = 'block';
+        }
+    </script>
 </body>
 </html> 

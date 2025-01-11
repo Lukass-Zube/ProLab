@@ -102,12 +102,30 @@
         .player-image {
             filter: grayscale(100%);
         }*/
+
+        .logout-button {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .logout-button:hover {
+            background-color: darkorange;
+        }
     </style>
 </head>
 <body>
     <!--
     <img src="https://w1.pngwing.com/pngs/719/518/png-transparent-basketball-nba-chicago-bulls-new-york-knicks-basketball-player-best-nba-player-espy-award-sports-basketball-moves-thumbnail.png" alt="NBA Player" class="player-image left">
     -->
+    <button class="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
     <div class="container">
         <h2>Last 5 Games</h2>
         {% for game in last_games %}

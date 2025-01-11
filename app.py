@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from pymongo import MongoClient
 from helper.update_time import get_last_update_time, set_last_update_time
 from predict_2_team import predict_winner
@@ -8,10 +8,73 @@ from helper.custom_errors import TeamNotFoundError
 import subprocess
 import joblib
 from dotenv import load_dotenv
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_bcrypt import Bcrypt
 
 load_dotenv()
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'  # Needed for session management
+
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+bcrypt = Bcrypt(app)
+
+# Connect to MongoDB
+client = MongoClient(os.getenv('MONGO_URI'))
+db = client['your_database_name']
+users_collection = db['users']
+
+# Example of adding a new user (registration)
+def add_user(username, password):
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    users_collection.insert_one({'username': username, 'password': hashed_password})
+
+# Example of checking user credentials (login)
+def check_user(username, password):
+    user = users_collection.find_one({'username': username})
+    if user and bcrypt.check_password_hash(user['password'], password):
+        return True
+    return False
+
+class User(UserMixin):
+    def __init__(self, username):
+        self.id = username
+
+# Set up the unauthorized handler to flash a message
+@login_manager.unauthorized_handler
+def unauthorized_callback():
+    flash('You need to log in to access this page.')
+    return redirect(url_for('login'))
+
+@login_manager.user_loader
+def load_user(user_id):
+    user = users_collection.find_one({'username': user_id})
+    if user:
+        return User(user_id)
+    return None
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if check_user(username, password):
+            login_user(User(username))
+            return redirect('/')
+        else:
+            flash('Invalid username or password')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 model = joblib.load('basketball_prediction_model_2_team.joblib')
 client = MongoClient(os.getenv('MONGO_URI'))
@@ -24,6 +87,7 @@ def home():
     return render_template('form.html', teams=teams)
 
 @app.route('/prediction', methods=['GET', 'POST'])
+@login_required
 def prediction():
     if request.method == 'GET':
         return redirect(url_for('home'))
@@ -119,6 +183,24 @@ def prediction():
         losing_team=losing_team, 
         losing_team_score=losing_team_score,
         last_games=consolidated_games)
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        # Check if the username already exists
+        if users_collection.find_one({'username': username}):
+            flash('Username already exists. Please choose a different one.')
+            return redirect(url_for('signup'))
+
+        # Add the new user to the database
+        add_user(username, password)
+        flash('Account created successfully! Please log in.')
+        return redirect(url_for('login'))
+
+    return render_template('signup.html')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80, debug=True)
