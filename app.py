@@ -121,8 +121,6 @@ def prediction():
     try:
         num_games = int(num_games)
         first_team, first_team_score, second_team, second_team_score = predict_winner(first_team, second_team, model, db, num_games)
-    
-
 
         games_collection = db['games']
         first_team_abbreviation = games_collection.find_one({'TEAM_NAME': first_team})['TEAM_ABBREVIATION']
@@ -136,53 +134,76 @@ def prediction():
         seen_game_ids = set()
         for game in last_games:
             if game['GAME_ID'] not in seen_game_ids:
-                # Find the opponent's record
+               
                 opponent_game = next(
                     (g for g in last_games if g['GAME_ID'] == game['GAME_ID'] and g != game), None
                 )
                 if opponent_game:
-                    consolidated_games.append({
-                        'date': game['GAME_DATE'],
-                        'team1': game['TEAM_NAME'],
-                        'team1_score': game['PTS'],
-                        'team1_result': game['WL'],
-                        'team2': opponent_game['TEAM_NAME'],
-                        'team2_score': opponent_game['PTS'],
-                        'team2_result': opponent_game['WL']
+                    if game['TEAM_NAME'] > opponent_game['TEAM_NAME']:
+                        team1, team1_score, team1_result = opponent_game['TEAM_NAME'], opponent_game['PTS'], opponent_game['WL']
+                        team2, team2_score, team2_result = game['TEAM_NAME'], game['PTS'], game['WL']
+                        
+                        team1_stats = {key: opponent_game[key] for key in [
+                           'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT',
+                           'FTM', 'FTA', 'FT_PCT', 'OREB', 'DREB', 'REB',
+                           'AST', 'STL', 'BLK', 'TOV', 'PF', 'PLUS_MINUS'
+                        ]}
+                        team2_stats = {key: game[key] for key in [
+                           'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT',
+                           'FTM', 'FTA', 'FT_PCT', 'OREB', 'DREB', 'REB',
+                           'AST', 'STL', 'BLK', 'TOV', 'PF', 'PLUS_MINUS'
+                        ]}
+                    else:
+                        team1, team1_score, team1_result = game['TEAM_NAME'], game['PTS'], game['WL']
+                        team2, team2_score, team2_result = opponent_game['TEAM_NAME'], opponent_game['PTS'], opponent_game['WL']
+
+                        team1_stats = {key: game[key] for key in [
+                           'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT',
+                           'FTM', 'FTA', 'FT_PCT', 'OREB', 'DREB', 'REB',
+                           'AST', 'STL', 'BLK', 'TOV', 'PF', 'PLUS_MINUS'
+                        ]}
+                        team2_stats = {key: opponent_game[key] for key in [
+                           'FGM', 'FGA', 'FG_PCT', 'FG3M', 'FG3A', 'FG3_PCT',
+                           'FTM', 'FTA', 'FT_PCT', 'OREB', 'DREB', 'REB',
+                           'AST', 'STL', 'BLK', 'TOV', 'PF', 'PLUS_MINUS'
+                        ]}
+
+                consolidated_games.append({
+                    'date': game['GAME_DATE'],
+                    'team1': team1,
+                    'team1_score': team1_score,
+                    'team1_result': team1_result,
+                    'team1_stats': team1_stats,
+                    'team2': team2,
+                    'team2_score': team2_score,
+                    'team2_result': team2_result,
+                    'team2_stats': team2_stats
                     })
-                    seen_game_ids.add(game['GAME_ID'])
+                seen_game_ids.add(game['GAME_ID'])
 
-            # Stop when we have 5 games
-            if len(consolidated_games) == 5:
-                break
-
+        consolidated_games = consolidated_games[:5]
         # Sort consolidated_games by date in ascending order
-        consolidated_games.sort(key=lambda x: x['date'])
-        
-        print("Last Games:", consolidated_games)
-        
-
+        consolidated_games.sort(key=lambda x: x['date'], reverse=True)
+    
     except TeamNotFoundError as e:
         return render_template('prediction.html', error_message=str(e)) #sis principa nekad nenostrada
-    
-    if first_team_score > second_team_score:
-        wining_team = first_team
-        losing_team = second_team
-        wining_team_score = first_team_score
-        losing_team_score = second_team_score
+
+    if first_team < second_team:  # Alphabetical ordering
+        team1, team1_score = first_team, first_team_score
+        team2, team2_score = second_team, second_team_score
     else:
-        wining_team = second_team
-        losing_team = first_team
-        wining_team_score = second_team_score
-        losing_team_score = first_team_score
-    
+        team1, team1_score = second_team, second_team_score
+        team2, team2_score = first_team, first_team_score
+
+    #  Pass team1 and team2 to the template, and determine the winner/loser dynamically
     return render_template(
-        'prediction.html', 
-        wining_team=wining_team, 
-        wining_team_score=wining_team_score, 
-        losing_team=losing_team, 
-        losing_team_score=losing_team_score,
-        last_games=consolidated_games)
+        'prediction.html',
+        team1=team1,
+        team1_score=team1_score,
+        team2=team2,
+        team2_score=team2_score,
+        last_games=consolidated_games
+    )
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():

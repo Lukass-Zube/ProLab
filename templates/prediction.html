@@ -8,41 +8,65 @@
         body, html {
             height: 100%;
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            overflow-y: auto;
             background-color: #000; /* Set a dark background */
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             flex-direction: column;
             text-align: center;
         }
+
+        h2 {
+            font-weight: bold;
+            color: white; 
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }     
 
         .container {
             display: flex;
             flex-direction: column;
             width: 90%;
             max-width: 600px;
-            margin-top: 20px;
+            margin: 20px auto;
         }
 
-        .game, .prediction-game {
+        .game{
             display: grid;
-            grid-template-columns: 1.5fr 0.5fr 1fr 0.5fr 1.5fr;
+            grid-template-columns: 1.5fr 0.5fr 1.5fr 0.5fr 1.5fr;
             align-items: center;
             padding: 15px;
             margin-bottom: 10px;
-            background-color: white;
-            color: black;
+            background-color: #333333;
+            color: #ffffff;
             border-radius: 5px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s ease;
         }
 
-        .prediction-game {
-            padding: 20px; /* Larger padding for prediction box */
-            border-radius: 8px; /* Larger border radius for prediction box */
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            font-size: 1.4em; /* Slightly larger font size for prediction box */
+        .game:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+        }
+
+        .game-unclickable{
+            display: grid;
+            grid-template-columns: 1.5fr 0.5fr 1.5fr 0.5fr 1.5fr;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #333333;
+            color: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        .winner {
+         font-weight: bold;
+         color: rgb(210, 121, 11);
+         font-size: 1em;
         }
 
         .game-team {
@@ -51,16 +75,16 @@
 
         .game-team.right {
             text-align: right;
-            padding-left: 10px; /* Add consistent spacing for right team */
+            padding-left: 10px; 
         }
 
-        .game-score, .prediction-game-score {
+        .game-score{
             font-size: 1.5em;
             font-weight: bold;
             text-align: center;
         }
 
-        .game-date, .prediction-game-date {
+        .game-date{
             text-align: center;
             font-size: 1em;
             font-weight: bold;
@@ -69,39 +93,25 @@
 
         .right-panel {
             margin-top: 30px;
+            margin-bottom: 50px;
         }
 
         button {
-            margin-top: 20px;
             padding: 10px 20px;
-            background-color: orange;
+            font-size: 1.2em;
+            background-color: #FF8C00; /* Vibrant orange */
+            color: #fff;
             border: none;
-            border-radius: 5px;
-            color: white;
+            border-radius: 25px; /* Fully rounded button */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             cursor: pointer;
-            font-size: 1em;
+            transition: all 0.3s ease;
         }
 
         button:hover {
-            background-color: darkorange;
+            background-color: #E07C00;
+            transform: scale(1.05);
         }
-        /*
-        .player-image {
-            position: absolute;
-            top: 10%;
-            width: 15%; 
-            max-width: 150px;
-            opacity: 0.8; 
-        }
-
-        .player-image.left {
-            left: 0;
-            transform: translateX(-50%); 
-        }
-
-        .player-image {
-            filter: grayscale(100%);
-        }*/
 
         .logout-button {
             position: fixed;
@@ -119,37 +129,378 @@
         .logout-button:hover {
             background-color: darkorange;
         }
+
+        canvas {
+            display: block; 
+            margin: 30px auto; 
+            background-color: white; 
+            border-radius: 5px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+            padding: 10px; 
+        }
+
+        .matchup-header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #222; /* Dark background for contrast */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+            color: white; /* Ensure text is visible on dark background */
+        }
+
+        .team {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 20px; /* Add space between teams */
+        }
+
+        .team-logo-large {
+            width: 80px; /* Adjust size of the logos */
+            height: 80px;
+            margin-bottom: 10px; /* Space between the logo and the name */
+        }
+
+        .team-name {
+            font-size: 1em;
+            font-weight: bold;
+            color: #CCCCCC; /* Orange to match the theme */
+        }
+
+        .vs {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 0 20px; /* Space between the "VS" and the teams */
+            color: white; /* White text for contrast */
+        }
+
+        .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        overflow: auto;
+        text-align: center;
+    }
+
+    .modal-content {
+        margin: 5% auto;
+        padding: 20px;
+        background-color: #222;
+        color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+        width: 80%;
+        max-width: 600px;
+        text-align: left;
+    }
+
+    .modal-content h2 {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .modal-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 16px;
+    }
+
+    .modal-content th, .modal-content td {
+        padding: 12px;
+        border: 0.5px solid #444;
+        text-align: center;
+    }
+
+    .modal-content th {
+        background-color: #333;
+        font-weight: bold;
+        color: #FFA500; /* Bright color for headers */
+    }
+
+    .modal-content tr:nth-child(even) {
+        background-color: #2A2A2A;
+    }
+
+    .modal-content tr:nth-child(odd) {
+        background-color: #1E1E1E;
+    }
+
+    .modal-content tr:hover {
+        background-color: #444; /* Highlight row on hover */
+    }
+
+    /* Highlight styles for better stats */
+    .highlight {
+        font-weight: bold;
+        color: white; /* Use white for text color to contrast with the background */
+        background-color: #4CAF50; /* Green background for better stats */
+        border-radius: 5px; /* Rounded corners for a badge-like effect */
+        padding: 4px 8px; /* Padding for a badge look */
+    }
+
+    .highlight.badge {
+        background-color: #FFA500; /* Orange for alternate badge color */
+        padding: 2px 6px;
+        font-size: 0.9em;
+        border-radius: 3px;
+    }
+
+    .modal-content td.stat-name {
+        font-weight: bold;
+        color: #f7d8a0; /* Orange for stat names */
+    }
     </style>
 </head>
 <body>
-    <!--
-    <img src="https://w1.pngwing.com/pngs/719/518/png-transparent-basketball-nba-chicago-bulls-new-york-knicks-basketball-player-best-nba-player-espy-award-sports-basketball-moves-thumbnail.png" alt="NBA Player" class="player-image left">
-    -->
     <button class="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
-    <div class="container">
-        <h2>Last 5 Games</h2>
-        {% for game in last_games %}
-        <div class="game">
-            <div class="game-team">{{ game.team1 }}</div>
-            <div class="game-score">{{ game.team1_score }}</div>
-            <div class="game-date">{{ game.date }}</div>
-            <div class="game-score">{{ game.team2_score }}</div>
-            <div class="game-team">{{ game.team2 }}</div>
+    
+    <div class="matchup-header">
+        <div class="team">
+            <img src="{{ url_for('static', filename='images/' + team1 + '.png') }}" alt="{{ team1 }} Logo" class="team-logo-large">
+            <span class="team-name">{{ team1 }}</span>
         </div>
-        {% endfor %}
-
-        <!-- Prediction Box -->
-        <div class="prediction-game">
-            <div class="game-team">{{ wining_team }}</div>
-            <div class="prediction-game-score">{{ wining_team_score }}</div>
-            <div class="prediction-game-date">?</div>
-            <div class="prediction-game-score">{{ losing_team_score }}</div>
-            <div class="game-team right">{{ losing_team }}</div>
-        </div>
-
-        <div class="right-panel">
-            <button onclick="window.location.href='/'">Create New Prediction</button>
+        <div class="vs">VS</div>
+        <div class="team">
+            <img src="{{ url_for('static', filename='images/' + team2 + '.png') }}" alt="{{ team2 }} Logo" class="team-logo-large">
+            <span class="team-name">{{ team2 }}</span>
         </div>
     </div>
+    
+    <div class="container">
+        <h2>Predicted score</h2>
+        <div class="game-unclickable">
+            <div class="game-team {% if team1_score > team2_score %}winner{% endif %}">{{ team1 }}</div>
+            <div class="game-score {% if team1_score > team2_score %}winner{% endif %}">{{ team1_score }}</div>
+            <div class="prediction-game-date">?</div>
+            <div class="game-score {% if team2_score > team1_score %}winner{% endif %}">{{ team2_score }}</div>
+            <div class="game-team right {% if team2_score > team1_score %}winner{% endif %}">{{ team2 }}</div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Last five games</h2>
+        {% for game in last_games %}
+        <div class="game">
+            <div class="game-team {% if game.team1_result == 'W' %}winner{% endif %}">{{ game.team1 }}</div>
+            <div class="game-score {% if game.team1_result == 'W' %}winner{% endif %}">{{ game.team1_score }}</div>
+            <div class="game-date">{{ game.date }}</div>
+            <div class="game-score {% if game.team2_result == 'W' %}winner{% endif %}">{{ game.team2_score }}</div>
+            <div class="game-team right {% if game.team2_result == 'W' %}winner{% endif %}">{{ game.team2 }}</div>
+        </div>
+        {% endfor %}  
+    </div>
+
+    <canvas id="game-results-graph" width="600" height="400"></canvas>
+
+    <div class="right-panel">
+        <button onclick="window.location.href='/'">New prediction</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Dynamic data from Flask
+        const games = {{ last_games | tojson }};
+        const team1 = "{{ team1 }}"; // Team 1 name from Flask
+        const team2 = "{{ team2 }}"; // Team 2 name from Flask
+    
+        // Extract dates and scores for the graph
+        const labels = games.map(game => new Date(game.date).toLocaleDateString()); // Format game dates as labels
+        const team1Data = games.map(game => game.team1_score); // Scores for Team 1
+        const team2Data = games.map(game => game.team2_score); // Scores for Team 2 (non-negated for side-by-side)
+    
+        // Initialize the chart
+        const ctx = document.getElementById('game-results-graph').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Use dates as labels
+                datasets: [
+                    {
+                        label: `${team1}`,
+                        data: team1Data,
+                        backgroundColor: 'rgba(220, 110, 0, 0.8)'
+                    },
+                    {
+                        label: `${team2}`,
+                        data: team2Data,
+                        backgroundColor: 'rgba(255, 165, 0, 0.8)'
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    x: {
+                        stacked: false, // Disable stacking for side-by-side bars
+                        title: {
+                            display: true,
+                }
+                    },
+                    y: {
+                        stacked: false, // Ensure no stacking on the y-axis
+       
+                    }
+                },
+                responsive: false,
+                maintainAspectRatio: false
+            }
+        });
+        ctx.canvas.width = 600; // Set the width (e.g., 600px)
+        ctx.canvas.height = 380; 
+    </script>
+
+    <div id="game-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-content"></p>
+        </div>
+    </div>
+    <script>
+        const modal = document.getElementById('game-modal');
+        const closeModal = document.querySelector('.close-modal');
+        const modalContent = document.getElementById('modal-content');
+    
+        const betterCriteria = {
+           FGM: "higher",
+           FGA: "higher",
+           FG_PCT: "higher",
+           FG3M: "higher",
+           FG3A: "higher",
+           FG3_PCT: "higher",
+           FTM: "higher",
+           FTA: "higher",
+           FT_PCT: "higher",
+           OREB: "higher",
+           DREB: "higher",
+           REB: "higher",
+           AST: "higher",
+           STL: "higher",
+           BLK: "higher",
+           TOV: "lower",
+           PF: "lower",
+           PLUS_MINUS: "higher"
+        };
+        // Add click event to each game box
+        document.querySelectorAll('.game').forEach((gameBox, index) => {
+            gameBox.addEventListener('click', () => {
+                const game = {{ last_games | tojson }}[index]; // Get the clicked game details
+    
+                const gameDate = new Date(game.date).toLocaleDateString();
+
+                const modalTitle = document.getElementById('modal-title');
+                modalTitle.textContent = `${gameDate}`;
+               
+                modalContent.innerHTML = `
+                    <h2>${game.team1} vs ${game.team2}</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>${game.team1}</th>
+                <th>Statistic</th>
+                <th>${game.team2}</th>
+            </tr>
+        </thead>
+       <tbody>
+    ${(() => {
+        const isTeam1Best = game.team1_score > game.team2_score;
+        const isTeam2Best = game.team2_score > game.team1_score;
+
+        return `
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid white; 
+                    font-weight: ${isTeam1Best ? 'bold' : 'normal'}; 
+                    background-color: ${isTeam1Best ? '#4CAF50' : 'transparent'};">
+                    ${game.team1_score}
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid white; 
+                    font-weight: bold; 
+                    color: inherit; 
+                    background-color: transparent;">
+                    Score
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid white; 
+                    font-weight: ${isTeam2Best ? 'bold' : 'normal'}; 
+                    background-color: ${isTeam2Best ? '#4CAF50' : 'transparent'};">
+                    ${game.team2_score}
+                </td>
+            </tr>
+        `;
+    })()}
+    ${Object.keys(game.team1_stats).map(key => {
+        const team1Value = formatValue(key, game.team1_stats[key]);
+        const team2Value = formatValue(key, game.team2_stats[key]);
+        const criteria = betterCriteria[key];
+
+        let team1Class = "";
+        let team2Class = "";
+
+        if (criteria === "higher") {
+            if (game.team1_stats[key] > game.team2_stats[key]) {
+                team1Class = "highlight";
+            } else if (game.team2_stats[key] > game.team1_stats[key]) {
+                team2Class = "highlight";
+            }
+        } else if (criteria === "lower") {
+            if (game.team1_stats[key] < game.team2_stats[key]) {
+                team1Class = "highlight";
+            } else if (game.team2_stats[key] < game.team1_stats[key]) {
+                team2Class = "highlight";
+            }
+        }
+
+        return `
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid white;" class="${team1Class}">
+                    ${team1Value}
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid white; font-weight: bold;">
+                    ${key}
+                </td>
+                <td style="padding: 10px; border-bottom: 1px solid white;" class="${team2Class}">
+                    ${team2Value}
+                </td>
+            </tr>
+        `;
+    }).join('')}
+</tbody>
+    </table>
+                `;
+    
+                // Show the modal
+                modal.style.display = 'block';
+            });
+        });
+    
+        // Close the modal when clicking the close button
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+    
+        // Close the modal when clicking outside the content
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        function formatValue(stat, value) {
+            const percentageStats = ['FG_PCT', 'FG3_PCT', 'FT_PCT'];
+            if (percentageStats.includes(stat)) {
+                return `${(value * 100).toFixed(0)}%`; 
+            }
+            return value; 
+}
+    </script>
 </body>
 </html>
