@@ -3,7 +3,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from helper.update_time import get_last_update_time, set_last_update_time
-from predict import predict_winner
+from predict_2_team import predict_winner
 from helper.custom_errors import TeamNotFoundError
 import subprocess
 import joblib
@@ -13,7 +13,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-model = joblib.load('basketball_prediction_model.joblib')
+model = joblib.load('basketball_prediction_model_2_team.joblib')
 client = MongoClient(os.getenv('MONGO_URI'))
 db = client['basketball_data']
 
@@ -92,6 +92,9 @@ def prediction():
             if len(consolidated_games) == 5:
                 break
 
+        # Sort consolidated_games by date in ascending order
+        consolidated_games.sort(key=lambda x: x['date'])
+        
         print("Last Games:", consolidated_games)
         
 
