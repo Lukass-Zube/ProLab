@@ -25,6 +25,7 @@ bcrypt = Bcrypt(app)
 # Connect to MongoDB
 client = MongoClient(os.getenv('MONGO_URI'))
 user_db = client['user_data']
+saved_predictions = client['saved_predictions']
 users_collection = user_db['users']
 
 # Example of adding a new user (registration)
@@ -226,7 +227,8 @@ def prediction():
         team1_score=team1_score,
         team2=team2,
         team2_score=team2_score,
-        last_games=consolidated_games
+        last_games=consolidated_games,
+        game_count=num_games
     )
 
 @app.route('/save_prediction', methods=['POST'])
@@ -238,7 +240,8 @@ def save_prediction():
         'team1': request.form['team1'],
         'team1_score': float(request.form['team1_score']),
         'team2': request.form['team2'],
-        'team2_score': float(request.form['team2_score'])
+        'team2_score': float(request.form['team2_score']),
+        'game_count': int(request.form['game_count'])
     })
     
     if existing_prediction:
@@ -253,11 +256,12 @@ def save_prediction():
         'team1_score': float(request.form['team1_score']),
         'team2': request.form['team2'],
         'team2_score': float(request.form['team2_score']),
+        'game_count': int(request.form['game_count']),
         'date_saved': datetime.now(timezone.utc)
     }
-    
+    print(prediction_data)
     # Save to MongoDB
-    user_db['saved_predictions'].insert_one(prediction_data)
+    saved_predictions['saved_predictions'].insert_one(prediction_data)
     
     return jsonify({
         'success': True,
