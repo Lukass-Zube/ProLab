@@ -47,4 +47,3 @@ Prognožu analīze: vizuāls prognožu attēlojums
 2.|Lietotājs vēlas, lai dati tiktu attēloti grafiski, jo tas padarīs informāciju vieglāk uztveramu un analizējamu.|Jā|Ir pievienoti grafiki, kas atvieglo datu analīzi un lietotāja pieredzi.|
 3.|Lietotājs vēlas autentificēties sistēmā, jo tas nodrošinās darījumu un prognožu vēstures saglabāšanu.|Jā|Sistēmā ir ieviesta droša lietotāja autentifikācija|
 4.|Lietotājs vēlas intuitīvi saprotamu mājas lapu, jo tā nodrošinās vieglu piekļuvi informācijai un uzlabos lietotāja pieredzi.|Jā|Mājas lapa ir izstrādāta ar vienkāršu un intuitīvu navigāciju, lai lietotāji varētu viegli atrast nepieciešamo informāciju.|
-5.|Sporta organizācija vēlas prognozēt basketbola spēļu rezultātus, jo tas palīdzēs analizēt pretinieku spēku un uzlabot spēļu stratēģiju.|Jā||
