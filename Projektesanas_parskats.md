@@ -47,4 +47,26 @@ Prognožu analīze: vizuāls prognožu attēlojums
 2.|Lietotājs vēlas, lai dati tiktu attēloti grafiski, jo tas padarīs informāciju vieglāk uztveramu un analizējamu.|Jā|Ir pievienoti grafiki, kas atvieglo datu analīzi un lietotāja pieredzi.|
 3.|Lietotājs vēlas autentificēties sistēmā, jo tas nodrošinās darījumu un prognožu vēstures saglabāšanu.|Jā|Sistēmā ir ieviesta droša lietotāja autentifikācija|
 4.|Lietotājs vēlas intuitīvi saprotamu mājas lapu, jo tā nodrošinās vieglu piekļuvi informācijai un uzlabos lietotāja pieredzi.|Jā|Mājas lapa ir izstrādāta ar vienkāršu un intuitīvu navigāciju, lai lietotāji varētu viegli atrast nepieciešamo informāciju.|
-5.|Sporta organizācija vēlas prognozēt basketbola spēļu rezultātus, jo tas palīdzēs analizēt pretinieku spēku un uzlabot spēļu stratēģiju.|Jā||
+
+# Risinājuma novērtējums
+
+**Problēmsituācija:**  Basketbola spēles rezultāta prognozēšana.
+
+**Eksperimenta mērķis:** Noteikt prognozi spēles rezultātam starp divām lietotāja izvēlētajām komandām.
+
+**Ieejas parametri:** *lietotāja ievadīti* - 1. komandas nosaukums, 2. komandas nosaukums, vēsturisko spēļu skaits *(5, 10, 15, 20, 25)*
+
+**Novērtēšanas mēri:** 1. komandas rezultāta novirze, 2. komandas rezultāta novirze
+
+**Eksperimenti:**
+
+<img width="708" alt="Screenshot 2025-01-12 at 23 02 39" src="https://github.com/user-attachments/assets/cc20dacf-1382-432e-9c98-4b3cb6baddc3" />
+
+### Statistika:
+
+Vidēji prognozētā rezultāta novirze no reālā rezultāta ir +/- 6,04 punkti.  
+- Ja tiek izvēlētas 5 komandas, tad novirze ir vidēji +/- 5,9 punkti  
+- Ja tiek izvēlētas 10 komandas, tad novirze ir vidēji +/- 5,7 punkti  
+- Ja tiek izvēlētas 15 komandas, tad novirze ir vidēji +/- 6,5 punkti  
+- Ja tiek izvēlētas 20 komandas, tad novirze ir vidēji +/- 6 punkti  
+- Ja tiek izvēlētas 25 komandas, tad novirze ir vidēji +/- 6,2 punkti  
