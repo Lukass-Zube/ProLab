@@ -116,8 +116,8 @@ def home():
     if current_user.is_authenticated:
         # Fetch the last 5 predictions
         user_predictions = list(saved_predictions.find(
-            {'user_id': current_user.id},
-            {'team1': 1, 'team1_score': 1, 'team2': 1, 'team2_score': 1, 'date_saved': 1, 'game_count': 1}
+           {'user_id': current_user.id},
+           {'team1': 1, 'team1_score': 1, 'team2': 1, 'team2_score': 1, 'date_saved': 1, 'game_count': 1}
         ).sort('date_saved', -1).limit(5))
         
         # Calculate most used team
