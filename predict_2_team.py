@@ -126,14 +126,28 @@ def predict_winner(first_team, second_team, model, db, num_games=10, home_advant
     team2_averages = calculate_weighted_averages(team2_games, team_id2)
     team2_averages['TEAM_ID'] = team_id2
 
-    # Calculate average of features for the last 10 games
-    # team1_averages = {feature: sum(game[feature] for game in team1_games) / len(team1_games) for feature in features}
-    # team1_averages['TEAM_ID'] = team_id1
-    # print(team1_averages)
+    team1_master_rank = teams_collection.find_one({'TEAM_ID': team_id1})['MASTER_RANK']
+    team2_master_rank = teams_collection.find_one({'TEAM_ID': team_id2})['MASTER_RANK']
+
+    # Calculate rank-based adjustment multipliers
+    RANK_ADJUSTMENT_FACTOR = 0.005  # 0.5% maximum adjustment per rank difference
+    MAX_ADJUSTMENT = 0.05  # 5% maximum total adjustment
     
-    # team2_averages = {feature: sum(game[feature] for game in team2_games) / len(team2_games) for feature in features}
-    # team2_averages['TEAM_ID'] = team_id2
-    # print(team2_averages)
+    rank_difference = team2_master_rank - team1_master_rank
+    adjustment = min(abs(rank_difference) * RANK_ADJUSTMENT_FACTOR, MAX_ADJUSTMENT)
+    
+    if rank_difference > 0:  # team1 is better ranked
+        team1_multiplier = 1 + adjustment
+        team2_multiplier = 1 - adjustment
+    else:  # team2 is better ranked
+        team1_multiplier = 1 - adjustment
+        team2_multiplier = 1 + adjustment
+
+    # Apply rank-based adjustments to averages
+    for feature in features:
+        if feature not in ['MIN', 'FG_PCT', 'FG3_PCT', 'FT_PCT']:  # Skip percentage stats
+            team1_averages[feature] *= team1_multiplier
+            team2_averages[feature] *= team2_multiplier
 
     # Calculate differences between average features for prediction
     combined_features = {}
