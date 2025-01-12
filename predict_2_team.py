@@ -9,21 +9,22 @@ from helper.custom_errors import TeamNotFoundError, NotEnoughGamesError
 
 def predict_winner(first_team, second_team, model, db, num_games=10, home_advantage=1):
     #home advantage is 1 for 1st team, 0 for 2nd team
-    # Find the teams using NBA API
-    matching_teams1 = teams.find_teams_by_full_name(first_team)
-    matching_teams2 = teams.find_teams_by_full_name(second_team)
+
+    teams_collection = db['teams']
+    
+    # Search for teams by name
+    team1_data = teams_collection.find_one({'TEAM_NAME': first_team})
+    team2_data = teams_collection.find_one({'TEAM_NAME': second_team})
 
     # Check for team existence
-    if not matching_teams1:
+    if not team1_data:
         raise TeamNotFoundError(first_team)
-    if not matching_teams2:
+    if not team2_data:
         raise TeamNotFoundError(second_team)
 
-    # Get team information
-    team_info1 = matching_teams1[0]
-    team_info2 = matching_teams2[0]
-    team_id1 = team_info1['id']
-    team_id2 = team_info2['id']
+    # Get team IDs
+    team_id1 = team1_data['TEAM_ID']
+    team_id2 = team2_data['TEAM_ID']
 
     games_collection = db['games']
 
@@ -183,7 +184,7 @@ def predict_winner(first_team, second_team, model, db, num_games=10, home_advant
         team2_score = round(predicted_scores[1])
 
     # Return team names and predicted scores
-    return team_info1['full_name'], team1_score, team_info2['full_name'], team2_score
+    return first_team, team1_score, second_team, team2_score
 
 def test_predict_game():
 
@@ -194,63 +195,6 @@ def test_predict_game():
     db = client['basketball_data']
 
     num_games = 5
-    # Mock team IDs for testing
-    # team_name1 = "Toronto Raptors"
-    # team_name2 = "Cleveland Cavaliers"
-
-    # # Call predict_game function
-    # team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    # print(team1_name, team1_score, team2_name, team2_score)
-    # Basic assertions
-
-    # team_name1 = "Golden State Warriors"
-    # team_name2 = "Detroit Pistons"
-
-    # # Call predict_game function
-    # team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    # print(team1_name, team1_score, team2_name, team2_score)
-
-    # team_name1 = "Minnesota Timberwolves"
-    # team_name2 = "Orlando Magic"
-
-    # # Call predict_game function
-    # team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    # print(team1_name, team1_score, team2_name, team2_score)
-
-    # team_name1 = "Portland Trail Blazers"
-    # team_name2 = "Dallas Mavericks"
-
-    # # Call predict_game function
-    # team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    # print(team1_name, team1_score, team2_name, team2_score)
-
-    # team_name1 = "Houston Rockets"
-    # team_name2 = "Memphis Grizzlies"
-
-    # # Call predict_game function
-    # team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    # print(team1_name, team1_score, team2_name, team2_score)
-
-    # team_name1 = "Atlanta Hawks"
-    # team_name2 = "Phoenix Suns"
-
-    # # Call predict_game function
-    # team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    # print(team1_name, team1_score, team2_name, team2_score)
-
-    # team_name1 = "Miami Heat"
-    # team_name2 = "Utah Jazz"
-
-    # # Call predict_game function
-    # team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    # print(team1_name, team1_score, team2_name, team2_score)
-
-    # team_name1 = "Miami Heat"
-    # team_name2 = "Utah Jazz"
-
-    # # Call predict_game function
-    # team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games)
-    # print(team1_name, team1_score, team2_name, team2_score)
 
     team_name1 = "Toronto Raptors"
     team_name2 = "Cleveland Cavaliers"
@@ -258,27 +202,7 @@ def test_predict_game():
     # Call predict_game function
     team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 1)
     print(team1_name, team1_score, team2_name, team2_score)
-    
-    team_name1 = "Toronto Raptors"
-    team_name2 = "Cleveland Cavaliers"
 
-    # Call predict_game function
-    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    print(team1_name, team1_score, team2_name, team2_score)
-
-    team_name2 = "Toronto Raptors"
-    team_name1 = "Cleveland Cavaliers"
-
-    # Call predict_game function
-    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 1)
-    print(team1_name, team1_score, team2_name, team2_score)
-
-    team_name2 = "Toronto Raptors"
-    team_name1 = "Cleveland Cavaliers"
-
-    # Call predict_game function
-    team1_name, team1_score, team2_name, team2_score = predict_winner(team_name1, team_name2, model, db, num_games, 0)
-    print(team1_name, team1_score, team2_name, team2_score)
 
 if __name__ == "__main__":
     test_predict_game()
