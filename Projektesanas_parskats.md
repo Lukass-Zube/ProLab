@@ -38,6 +38,13 @@ Prognožu analīze: vizuāls prognožu attēlojums
 | OS: Ubuntu |
 | Izvietošana: Azure App Service |
 
+# Programmatūras apraksts
+
+Šī programmatūra ir tīmekļa lietojumprogramma, kas izvietota Azure App Service platformā. Sistēma ir integrēta ar GitHub repozitoriju, no kura tā automātiski ielādē kodu no galvenā (main) zara, nodrošinot jaunākās versijas izvietošanu un darbību. Azure App Service nodrošina stabilu un uzticamu programmas hostēšanu.
+
+Programmatūra izmanto MongoDB datubāzi, kas tiek hostēta Atlas platformā. Datubāze kalpo ne tikai vēsturisko basketbola spēļu rezultātu uzglabāšanai, bet arī lietotāju veidoto prognožu glabāšanai. Šī funkcionalitāte ļauj saglabāt personalizētus lietotāju datus un analizēt prognožu precizitāti ilgtermiņā.
+
+Sistēma nodrošina pilnīgi automatizētu darbplūsmu, sākot no koda izvietošanas līdz datubāzes piekļuvei un datu apstrādei, tādējādi piedāvājot efektīvu un viegli uzturamu risinājumu, kas ļauj lietotājiem saņemt precīzas prognozes un iegūt ieskatu savās vēsturiskajās prognozēs.
 
 # Lietotāju stāsti
 
