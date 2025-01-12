@@ -55,6 +55,19 @@ Sistēma nodrošina pilnīgi automatizētu darbplūsmu, sākot no koda izvietoš
 3.|Lietotājs vēlas autentificēties sistēmā, jo tas nodrošinās darījumu un prognožu vēstures saglabāšanu.|Jā|Sistēmā ir ieviesta droša lietotāja autentifikācija|
 4.|Lietotājs vēlas intuitīvi saprotamu mājas lapu, jo tā nodrošinās vieglu piekļuvi informācijai un uzlabos lietotāja pieredzi.|Jā|Mājas lapa ir izstrādāta ar vienkāršu un intuitīvu navigāciju, lai lietotāji varētu viegli atrast nepieciešamo informāciju.|
 
+# Algoritma apraksts
+
+1. Izvēlās komandu nosaukumus. 
+2. Ievada cik n pēdējo spēļu statistiku izmantot.  
+3. Komandu pēdējo n spēļu statistikas mērogošana izmantojot komandu reitingus.  
+4. Komandu pēdējo n spēļu statistikas mērogošana pēc mājinieku priekšrocības. 
+5. Komandu vidējās statistikas aprēķināšana.  
+6. Komandu vidējo statistiku mērogošana pēc abu komandu reitinga atšķirības lieluma.  
+7. Komandu vidējās statistikas ievade “GradientBoostingRegressor” modelī.  
+8. Spēles paredzētais rezultāts.  
+
+
+
 # Risinājuma novērtējums
 
 **Problēmsituācija:**  Basketbola spēles rezultāta prognozēšana.
@@ -77,3 +90,16 @@ Vidēji prognozētā rezultāta novirze no reālā rezultāta ir +/- 6,04 punkti
 - Ja tiek izvēlētas 15 komandas, tad novirze ir vidēji +/- 6,5 punkti  
 - Ja tiek izvēlētas 20 komandas, tad novirze ir vidēji +/- 6 punkti  
 - Ja tiek izvēlētas 25 komandas, tad novirze ir vidēji +/- 6,2 punkti  
+
+# Secinājumi
+
+Mūsu komanda veiksmīgi izpildīja izvirzīto mērķi – izveidot tīmekļa lietojumprogrammu, kas prognozē basketbola spēļu rezultātus, izmantojot vēsturiskos datus. Projekta gaitā sapratām, ka spēles iznākumu ietekmē daudzi mainīgie, piemēram, komandu statistika, spēlētāju sniegums, stratēģijas un traumas, kas algoritma izveidi padarīja ļoti sarežģītu.
+
+Izstrādē tika integrēts NBA API, nodrošinot aktuālus spēļu datus, un izveidots mašīnmācīšanās modelis. Modeļa parametri tika pielāgoti un testēti, lai uzlabotu precizitāti un veiktspēju, regulāri identificējot un novēršot kļūdas.
+
+Lietotnes saskarne ir viegli saprotama un piedāvā lietotājiem iespēju izvēlēties komandas, ievadīt vēsturisko datu apjomu un apskatīt personalizētas prognozes. Ir ieviesti kļūdu paziņojumi, kas skaidri norāda problēmas un palīdz tās atrisināt. Tomēr pašreizējā frontend risinājuma struktūra ir nepilnīga, un nākotnē, lai uzlabotu lietotāja pieredzi un estētiku, būtu lietderīgi izmantot specializētus ietvarus, piemēram, React.
+
+Veidojot šo projektu, mēs apguvām jaunas tehnoloģijas, metodes un procesus, lai radītu funkcionālu un lietderīgu risinājumu. Papildu pilnveidojumi nākotnē varētu padarīt lietotnes darbību vēl labāku un lietotājam draudzīgāku.
+
+
+
