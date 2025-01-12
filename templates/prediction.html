@@ -260,6 +260,21 @@
         font-weight: bold;
         color: #f7d8a0; /* Orange for stat names */
     }
+
+    #savePredictionBtn {
+        margin-right: 10px;
+        background-color: #4CAF50; /* Green color for save button */
+    }
+
+    #savePredictionBtn:hover {
+        background-color: #45a049;
+    }
+
+    .right-panel {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
     </style>
 </head>
 <body>
@@ -304,6 +319,7 @@
     <canvas id="game-results-graph" width="600" height="400"></canvas>
 
     <div class="right-panel">
+        <button id="savePredictionBtn" onclick="savePrediction()">Save Prediction</button>
         <button onclick="window.location.href='/'">New prediction</button>
     </div>
 
@@ -519,6 +535,30 @@
             }
             return value; 
 }
+    </script>
+
+    <script>
+    async function savePrediction() {
+        const response = await fetch('/save_prediction', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                'team1': '{{ team1 }}',
+                'team1_score': '{{ team1_score }}',
+                'team2': '{{ team2 }}',
+                'team2_score': '{{ team2_score }}'
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            alert(data.message);
+        } else {
+            alert('Error saving prediction');
+        }
+    }
     </script>
 </body>
 </html>

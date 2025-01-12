@@ -24,8 +24,8 @@ bcrypt = Bcrypt(app)
 
 # Connect to MongoDB
 client = MongoClient(os.getenv('MONGO_URI'))
-db = client['your_database_name']
-users_collection = db['users']
+user_db = client['user_data']
+users_collection = user_db['users']
 
 # Example of adding a new user (registration)
 def add_user(username, password):
@@ -47,7 +47,7 @@ class User(UserMixin):
 @login_manager.unauthorized_handler
 def unauthorized_callback():
     flash('You need to log in to access this page.')
-    return redirect(url_for('login'))
+    return redirect('/')
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -102,7 +102,6 @@ def logout():
     return redirect(url_for('home'))
 
 model = joblib.load('basketball_prediction_model_2_team.joblib')
-client = MongoClient(os.getenv('MONGO_URI'))
 db = client['basketball_data']
 
 @app.route('/')
@@ -229,6 +228,41 @@ def prediction():
         team2_score=team2_score,
         last_games=consolidated_games
     )
+
+@app.route('/save_prediction', methods=['POST'])
+@login_required
+def save_prediction():
+    # Check for existing prediction with same teams and scores
+    existing_prediction = db['saved_predictions'].find_one({
+        'user_id': current_user.id,
+        'team1': request.form['team1'],
+        'team1_score': float(request.form['team1_score']),
+        'team2': request.form['team2'],
+        'team2_score': float(request.form['team2_score'])
+    })
+    
+    if existing_prediction:
+        return jsonify({
+            'success': False,
+            'message': 'You have already saved this prediction!'
+        })
+    
+    prediction_data = {
+        'user_id': current_user.id,
+        'team1': request.form['team1'],
+        'team1_score': float(request.form['team1_score']),
+        'team2': request.form['team2'],
+        'team2_score': float(request.form['team2_score']),
+        'date_saved': datetime.now(timezone.utc)
+    }
+    
+    # Save to MongoDB
+    db['saved_predictions'].insert_one(prediction_data)
+    
+    return jsonify({
+        'success': True,
+        'message': 'Prediction saved successfully!'
+    })
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80, debug=True)
