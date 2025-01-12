@@ -137,6 +137,7 @@
             border-radius: 5px; 
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
             padding: 10px; 
+            /* height: 600px !important; */
         }
 
         .matchup-header {
@@ -317,15 +318,15 @@
         // Extract dates and scores for the graph
         const reversedGames = games.slice().reverse();
         const labels = reversedGames.map(game => new Date(game.date).toLocaleDateString());
-const team1Data = reversedGames.map(game => game.team1_score);
-const team2Data = reversedGames.map(game => game.team2_score); // Scores for Team 2 (non-negated for side-by-side)
+        const team1Data = reversedGames.map(game => game.team1_score);
+        const team2Data = reversedGames.map(game => game.team2_score);
     
         // Initialize the chart
         const ctx = document.getElementById('game-results-graph').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: labels, // Use dates as labels
+                labels: labels,
                 datasets: [
                     {
                         label: `${team1}`,
@@ -340,25 +341,40 @@ const team2Data = reversedGames.map(game => game.team2_score); // Scores for Tea
                 ]
             },
             options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                aspectRatio: 2,  // Width:Height ratio of 2:1
                 scales: {
                     x: {
-                        stacked: false, // Disable stacking for side-by-side bars
-                        title: {
-                            display: true,
-                }
+                        stacked: false,
+                        grid: {
+                            display: false
+                        }
                     },
                     y: {
-                        stacked: false, // Ensure no stacking on the y-axis
-       
+                        stacked: false,
+                        beginAtZero: true,
+                        suggestedMin: Math.min(...[...team1Data, ...team2Data]) - 5,
+                        suggestedMax: Math.max(...[...team1Data, ...team2Data]) + 5,
+                        ticks: {
+                            stepSize: 10,
+                            maxTicksLimit: 6
+                        }
                     }
                 },
-                responsive: false,
-                maintainAspectRatio: false,
-                
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                const label = context.dataset.label || '';
+                                const value = context.raw;
+                                return `${label}: ${value}`;
+                            }
+                        }
+                    }
+                }
             }
         });
-        ctx.canvas.width = 600; // Set the width (e.g., 600px)
-        ctx.canvas.height = 380; 
     </script>
 
     <div id="game-modal" class="modal">

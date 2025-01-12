@@ -163,6 +163,68 @@ input[type="submit"]:hover {
         .logout-button:hover {
             background-color: darkorange;
         }
+
+        .custom-select-wrapper {
+            position: relative;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .custom-select {
+            font-size: 1.1rem;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            border: none;
+            border-radius: 5px;
+            background-color: rgb(45, 44, 44);
+            color: white;
+            border: 1px solid white;
+            outline: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .custom-select:after {
+            content: '▼';
+            margin-left: 10px;
+            transition: transform 0.3s;
+        }
+
+        .custom-select.active:after {
+            transform: rotate(180deg);
+        }
+
+        .custom-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: rgb(45, 44, 44);
+            border: 1px solid white;
+            border-radius: 5px;
+            margin-top: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1002;
+        }
+
+        .custom-option {
+            padding: 10px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .custom-option:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .custom-option.selected {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
     </style>
 </head>
 <body>
@@ -177,32 +239,47 @@ input[type="submit"]:hover {
     <div class="title">Ready to predict NBA game score?</div>
 
     <form action="/prediction" method="post">
-        <label for="first_team" style="margin-bottom: -10px;">First Team:</label><br>
-        <select id="first_team" name="first_team">
-            <option value="" hidden selected>Choose first team</option>
-            {% for team in teams %}
-                <option value="{{ team.TEAM_NAME }}">{{ team.TEAM_NAME }}</option>
-            {% endfor %}
-        </select><br><br>
-        
-        <label for="second_team" style="margin-bottom: -10px;">Second Team:</label><br>
-        <select id="second_team" name="second_team">
-            <option value="" hidden selected>Choose second team</option>
-            {% for team in teams %}
-                <option value="{{ team.TEAM_NAME }}">{{ team.TEAM_NAME }}</option>
-            {% endfor %}
-        </select><br><br>
+        <label for="first_team">First Team:</label>
+        <div class="custom-select-wrapper">
+            <input type="hidden" name="first_team" id="first_team_input">
+            <div class="custom-select" id="first_team_select">
+                <span>Choose first team</span>
+            </div>
+            <div class="custom-options" id="first_team_options">
+                {% for team in teams %}
+                    <div class="custom-option" data-value="{{ team.TEAM_NAME }}">{{ team.TEAM_NAME }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <label for="second_team">Second Team:</label>
+        <div class="custom-select-wrapper">
+            <input type="hidden" name="second_team" id="second_team_input">
+            <div class="custom-select" id="second_team_select">
+                <span>Choose second team</span>
+            </div>
+            <div class="custom-options" id="second_team_options">
+                {% for team in teams %}
+                    <div class="custom-option" data-value="{{ team.TEAM_NAME }}">{{ team.TEAM_NAME }}</div>
+                {% endfor %}
+            </div>
+        </div>
 
         <label for="historical_game_number">Number of historical games:</label>
-        <select id="historical_game_number" name="historical_game_number">
-            <option value="" hidden selected>Choose a number</option>
-            <option value=5>5</option>
-            <option value=10>10</option>
-            <option value=15>15</option>
-            <option value=20>20</option>
-            <option value=25>25</option>
-        </select>
-        
+        <div class="custom-select-wrapper">
+            <input type="hidden" name="historical_game_number" id="historical_game_number_input">
+            <div class="custom-select" id="historical_game_number_select">
+                <span>Choose a number</span>
+            </div>
+            <div class="custom-options" id="historical_game_number_options">
+                <div class="custom-option" data-value="5">5</div>
+                <div class="custom-option" data-value="10">10</div>
+                <div class="custom-option" data-value="15">15</div>
+                <div class="custom-option" data-value="20">20</div>
+                <div class="custom-option" data-value="25">25</div>
+            </div>
+        </div>
+
         <button type="submit">Submit</button>
 
         {% if error_message %}
@@ -219,6 +296,48 @@ input[type="submit"]:hover {
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('floatingMessage').style.display = 'block';
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Close all dropdowns when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.custom-select-wrapper')) {
+                    document.querySelectorAll('.custom-select').forEach(select => {
+                        select.classList.remove('active');
+                    });
+                    document.querySelectorAll('.custom-options').forEach(options => {
+                        options.style.display = 'none';
+                    });
+                }
+            });
+
+            // Setup each custom select
+            document.querySelectorAll('.custom-select-wrapper').forEach(wrapper => {
+                const select = wrapper.querySelector('.custom-select');
+                const options = wrapper.querySelector('.custom-options');
+                const input = wrapper.querySelector('input[type="hidden"]');
+                const span = select.querySelector('span');
+
+                select.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    this.classList.toggle('active');
+                    options.style.display = options.style.display === 'block' ? 'none' : 'block';
+                });
+
+                wrapper.querySelectorAll('.custom-option').forEach(option => {
+                    option.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        span.textContent = this.textContent;
+                        input.value = this.dataset.value;
+                        options.style.display = 'none';
+                        select.classList.remove('active');
+                        wrapper.querySelectorAll('.custom-option').forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        this.classList.add('selected');
+                    });
+                });
+            });
+        });
     </script>
 </body>
 </html> 
