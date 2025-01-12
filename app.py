@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from pymongo import MongoClient
 from helper.update_time import get_last_update_time, set_last_update_time
 from predict_2_team import predict_winner
@@ -62,17 +62,23 @@ def login():
     password = request.form['password']
 
     if not username or not password:
-        flash('Both username and password are required.', 'error')
-        return redirect(url_for('home'))
+        return jsonify({
+            'success': False,
+            'message': 'Both username and password are required.'
+        })
 
     user = users_collection.find_one({'username': username})
     if user and bcrypt.check_password_hash(user['password'], password):
         login_user(User(username))
-        flash('Logged in successfully!')
-        return redirect(url_for('home'))  # Redirect to home after successful login
+        return jsonify({
+            'success': True,
+            'redirect': url_for('home')
+        })
     else:
-        flash('Invalid username or password')
-        return redirect(url_for('home'))  # Redirect to reload the page with the login modal
+        return jsonify({
+            'success': False,
+            'message': 'Invalid username or password'
+        })
 
 @app.route('/signup', methods=['POST'])
 def signup():

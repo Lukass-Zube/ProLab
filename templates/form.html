@@ -295,6 +295,11 @@ input[type="submit"]:hover {
     border-radius: 5px; /* Optional: Make input corners rounded */
     box-sizing: border-box; /* Include padding in the input's width */
 }
+
+.modal-content {
+    height: 500px;
+    width: 400px;
+}
     </style>
 </head>
 <body>
@@ -344,12 +349,12 @@ input[type="submit"]:hover {
         <button class="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
     {% endif %}
 
-    <div class="overlay" id="overlay"></div>
+    <!-- <div class="overlay" id="overlay"></div>
     <div class="floating-message" id="floatingMessage">
         <p>You need to log in to access this page.</p>
         <a href="{{ url_for('login') }}">Login</a>
         <a href="{{ url_for('signup') }}">Sign Up</a>
-    </div>
+    </div> -->
 
     <div class="title">Ready to predict NBA game score?</div>
 
@@ -482,14 +487,35 @@ input[type="submit"]:hover {
         loginErrorContainer.className = 'error-message'; // Add error message styling
         passwordInput.parentNode.insertBefore(loginErrorContainer, passwordInput.nextSibling);
 
-        loginForm.addEventListener('submit', function (e) {
+        loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
             loginErrorContainer.innerHTML = ''; // Clear previous errors
             const username = document.getElementById('username').value.trim();
             const password = passwordInput.value.trim();
 
             if (!username || !password) {
-                e.preventDefault();
                 loginErrorContainer.innerHTML = 'Both username and password are required.';
+                return;
+            }
+
+            // Submit the form data using fetch
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'username': username,
+                    'password': password
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                window.location.href = data.redirect;
+            } else {
+                loginErrorContainer.innerHTML = data.message;
             }
         });
 
