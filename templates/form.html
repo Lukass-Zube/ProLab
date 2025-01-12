@@ -412,7 +412,7 @@ input[type="submit"]:hover {
     </form>
     
   {% if user_predictions %}
-  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; margin-bottom: 50px; gap: 20px; width: 100%; max-width: 1200px;">
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; gap: 20px; width: 100%; max-width: 1200px;">
     <!-- Last 5 Predictions Table -->
     <div style="flex: 1;">
         <h3 style="text-align: left; margin-bottom: 15px; font-size: 1.8rem; font-weight: bold;">
@@ -425,6 +425,7 @@ input[type="submit"]:hover {
                     <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Score</th>
                     <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Team 2</th>
                     <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Score</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Historical Games</th>
                     <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Date</th>
                 </tr>
             </thead>
@@ -435,6 +436,7 @@ input[type="submit"]:hover {
                         <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold; color: #ff9800;">{{ prediction.team1_score | int }}</td>
                         <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.team2 }}</td>
                         <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold; color: #ff9800;">{{ prediction.team2_score | int }}</td>
+                        <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.game_count }}</td>
                         <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.date_saved.strftime('%Y-%m-%d') }}</td>
                     </tr>
                 {% endfor %}
