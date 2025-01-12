@@ -151,14 +151,13 @@ def prediction():
     if request.method == 'GET':
         return redirect(url_for('home'))
 
-    current_time_utc = datetime.now(timezone.utc)  # Get the current UTC time
+    current_time_utc = datetime.now(timezone.utc)
     last_update_time = get_last_update_time(db)
 
     if last_update_time.tzinfo is None:
         last_update_time = last_update_time.replace(tzinfo=timezone.utc)
 
-    # Check if the last update was more than an hour ago
-    if (current_time_utc - last_update_time).total_seconds() > 3600:  # 3600 seconds = 1 hour
+    if (current_time_utc - last_update_time).total_seconds() > 3600:
         subprocess.run(['python', 'nba_api_call/update_game_history.py'])
         subprocess.run(['python', 'nba_api_call/update_team_score.py'])
         subprocess.run(['python', 'nba_api_call/create_rank.py'])
@@ -168,16 +167,6 @@ def prediction():
     second_team = request.form.get('second_team')
     num_games = request.form.get('historical_game_number')
     
-    matching_predictions = []
-    error_message = None
-    if not first_team or not second_team or not num_games:
-        error_message = "One or more fields haven't been selected"
-
-    if error_message:
-        teams_collection = db['teams']
-        teams = list(teams_collection.find({}, {'TEAM_NAME': 1}))  
-        return render_template('form.html', teams=teams, error_message=error_message)
-
     try:
         num_games = int(num_games)
         first_team, first_team_score, second_team, second_team_score = predict_winner(first_team, second_team, model, db, num_games)

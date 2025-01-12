@@ -106,9 +106,12 @@ input[type="submit"]:hover {
     color: red; /* Make text red */
     font-size: 0.9em; /* Adjust text size */
     text-align: center; /* Center-align text */
-    margin-top: 10px; /* Add space between the input field and the error message */
-    display: block; /* Ensure it spans the entire width */
-    width: 100%; /* Make sure it's centered within the form */
+    margin-top: 10px; /* Add space above */
+    display: none; /* Hidden by default */
+    background-color: rgba(255, 0, 0, 0.1); /* Light red background */
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid red;
 }
 
         button {
@@ -302,6 +305,18 @@ input[type="submit"]:hover {
     height: 500px;
     width: 400px;
 }
+
+.error {
+    color: #ff0000;
+    background-color: rgba(255, 0, 0, 0.1);
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ff0000;
+    text-align: center;
+    font-weight: bold;
+    border: 2px solid blue; /* Temporary border for visibility */
+}
     </style>
 </head>
 <body>
@@ -362,7 +377,10 @@ input[type="submit"]:hover {
 
   
 
-    <form action="/prediction" method="post" style="transform: translateX(-150px);">
+    <form action="/prediction" method="post" style="transform: translateX(-150px);" onsubmit="return validateForm()">
+        <!-- Error Message Container -->
+        <div id="errorContainer" class="error-message"></div>
+
         <label for="first_team">First Team:</label>
         <div class="custom-select-wrapper">
             <input type="hidden" name="first_team" id="first_team_input">
@@ -407,7 +425,7 @@ input[type="submit"]:hover {
         <button type="submit">Submit</button>
 
         {% if error_message %}
-            <div class="error">{{ error_message }}</div>
+            <div class="error-message">{{ error_message }}</div>
         {% endif %}
     </form>
     
@@ -610,6 +628,52 @@ input[type="submit"]:hover {
         if (!isLoggedIn) {
             openModal('loginModal');
         }
+    </script>
+
+    <!-- Add validation script -->
+    <script>
+    function validateForm() {
+        console.log("Validating form...");
+
+        const firstTeam = document.getElementById('first_team_input').value;
+        const secondTeam = document.getElementById('second_team_input').value;
+        const historicalGames = document.getElementById('historical_game_number_input').value;
+        
+        let errorMessage = "";
+        
+        if (!firstTeam || !secondTeam || !historicalGames) {
+            errorMessage = "One or more fields haven't been selected";
+        } else if (firstTeam === secondTeam) {
+            errorMessage = "Please select two different teams";
+        }
+        
+        if (errorMessage) {
+            console.log("Error detected: ", errorMessage);
+
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.textContent = errorMessage;
+            errorContainer.style.display = 'block'; // Make it visible
+
+            // Optionally, scroll to the error message
+            errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return false;
+        }
+
+        // Hide the error message if validation passes
+        const errorContainer = document.getElementById('errorContainer');
+        errorContainer.textContent = "";
+        errorContainer.style.display = 'none';
+        return true;
+    }
+
+    // Optional: Close error message when user starts correcting the form
+    document.querySelectorAll('input, select').forEach(element => {
+        element.addEventListener('input', () => {
+            const errorContainer = document.getElementById('errorContainer');
+            errorContainer.textContent = "";
+            errorContainer.style.display = 'none';
+        });
+    });
     </script>
 </body>
 </html> 
