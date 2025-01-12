@@ -1,7 +1,7 @@
 # Ievads
-Šī projekta problēmsituācija ir basketbola spēles rezultāta prognozēšana. 
+Šī projekta problēmsituācija ir basketbola spēles rezultāta prognozēšana. Mūsdienās, lai prognozētu sporta spēles rezultātus, sporta entuziasti pārsvarā balstās uz savu intuīciju. Spēles rezultātu būtiski ietekmē komandas spēlētāju sastāvi, spēlētāju fiziskā forma, un citi faktori, taču, balstoties uz vēsturiskiem datiem par spēļu rezultātiem, iespējams veikt precīzākas prognozes par kādas komandas veiktspēju.
 
-Mērķis ir izveidot tīmekļa lietojumprogrammu, kura, balstoties uz vēsturiskiem basketbola spēļu datiem, nosaka prognozi spēles rezultātam starp divām lietotāja izvēlētajām komandām.
+Projekta mērķis ir izveidot tīmekļa lietojumprogrammu, kura, balstoties uz vēsturiskiem basketbola spēļu datiem, nosaka prognozi spēles rezultātam starp divām lietotāja izvēlētajām basketbola komandām. 
 
 # Līdzīgo risinājumu pārskats
 
