@@ -25,8 +25,10 @@ bcrypt = Bcrypt(app)
 # Connect to MongoDB
 client = MongoClient(os.getenv('MONGO_URI'))
 user_db = client['user_data']
-saved_predictions = client['saved_predictions']
+saved_predictions = user_db['saved_predictions']
 users_collection = user_db['users']
+model = joblib.load('basketball_prediction_model_2_team.joblib')
+db = client['basketball_data']
 
 # Example of adding a new user (registration)
 def add_user(username, password):
@@ -101,9 +103,6 @@ def logout():
     logout_user()
     flash('You have been logged out.')
     return redirect(url_for('home'))
-
-model = joblib.load('basketball_prediction_model_2_team.joblib')
-db = client['basketball_data']
 
 @app.route('/')
 def home():
@@ -235,7 +234,7 @@ def prediction():
 @login_required
 def save_prediction():
     # Check for existing prediction with same teams and scores
-    existing_prediction = db['saved_predictions'].find_one({
+    existing_prediction = saved_predictions.find_one({
         'user_id': current_user.id,
         'team1': request.form['team1'],
         'team1_score': float(request.form['team1_score']),
@@ -261,7 +260,7 @@ def save_prediction():
     }
     print(prediction_data)
     # Save to MongoDB
-    saved_predictions['saved_predictions'].insert_one(prediction_data)
+    saved_predictions.insert_one(prediction_data)
     
     return jsonify({
         'success': True,
