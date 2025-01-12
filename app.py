@@ -257,7 +257,7 @@ def save_prediction():
     }
     
     # Save to MongoDB
-    db['saved_predictions'].insert_one(prediction_data)
+    user_db['saved_predictions'].insert_one(prediction_data)
     
     return jsonify({
         'success': True,
