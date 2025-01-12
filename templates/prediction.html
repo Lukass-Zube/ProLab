@@ -437,79 +437,79 @@
                
                 modalContent.innerHTML = `
                     <h2>${game.team1} vs ${game.team2}</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>${game.team1}</th>
-                <th>Statistic</th>
-                <th>${game.team2}</th>
-            </tr>
-        </thead>
-       <tbody>
-    ${(() => {
-        const isTeam1Best = game.team1_score > game.team2_score;
-        const isTeam2Best = game.team2_score > game.team1_score;
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>${game.team1}</th>
+                                <th>Statistic</th>
+                                <th>${game.team2}</th>
+                            </tr>
+                        </thead>
+                    <tbody>
+                    ${(() => {
+                        const isTeam1Best = game.team1_score > game.team2_score;
+                        const isTeam2Best = game.team2_score > game.team1_score;
 
-        return `
-            <tr>
-                <td style="padding: 10px; border-bottom: 1px solid white; 
-                    font-weight: ${isTeam1Best ? 'bold' : 'normal'}; 
-                    background-color: ${isTeam1Best ? '#4CAF50' : 'transparent'};">
-                    ${game.team1_score}
-                </td>
-                <td style="padding: 10px; border-bottom: 1px solid white; 
-                    font-weight: bold; 
-                    color: inherit; 
-                    background-color: transparent;">
-                    Score
-                </td>
-                <td style="padding: 10px; border-bottom: 1px solid white; 
-                    font-weight: ${isTeam2Best ? 'bold' : 'normal'}; 
-                    background-color: ${isTeam2Best ? '#4CAF50' : 'transparent'};">
-                    ${game.team2_score}
-                </td>
-            </tr>
-        `;
-    })()}
-    ${Object.keys(game.team1_stats).map(key => {
-        const team1Value = formatValue(key, game.team1_stats[key]);
-        const team2Value = formatValue(key, game.team2_stats[key]);
-        const criteria = betterCriteria[key];
+                        return `
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid white; 
+                                    font-weight: ${isTeam1Best ? 'bold' : 'normal'}; 
+                                    background-color: ${isTeam1Best ? '#4CAF50' : 'transparent'};">
+                                    ${game.team1_score}
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid white; 
+                                    font-weight: bold; 
+                                    color: inherit; 
+                                    background-color: transparent;">
+                                    Score
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid white; 
+                                    font-weight: ${isTeam2Best ? 'bold' : 'normal'}; 
+                                    background-color: ${isTeam2Best ? '#4CAF50' : 'transparent'};">
+                                    ${game.team2_score}
+                                </td>
+                            </tr>
+                        `;
+                    })()}
+                    ${Object.keys(game.team1_stats).map(key => {
+                        const team1Value = formatValue(key, game.team1_stats[key]);
+                        const team2Value = formatValue(key, game.team2_stats[key]);
+                        const criteria = betterCriteria[key];
 
-        let team1Class = "";
-        let team2Class = "";
+                        let team1Class = "";
+                        let team2Class = "";
 
-        if (criteria === "higher") {
-            if (game.team1_stats[key] > game.team2_stats[key]) {
-                team1Class = "highlight";
-            } else if (game.team2_stats[key] > game.team1_stats[key]) {
-                team2Class = "highlight";
-            }
-        } else if (criteria === "lower") {
-            if (game.team1_stats[key] < game.team2_stats[key]) {
-                team1Class = "highlight";
-            } else if (game.team2_stats[key] < game.team1_stats[key]) {
-                team2Class = "highlight";
-            }
-        }
+                        if (criteria === "higher") {
+                            if (game.team1_stats[key] > game.team2_stats[key]) {
+                                team1Class = "highlight";
+                            } else if (game.team2_stats[key] > game.team1_stats[key]) {
+                                team2Class = "highlight";
+                            }
+                        } else if (criteria === "lower") {
+                            if (game.team1_stats[key] < game.team2_stats[key]) {
+                                team1Class = "highlight";
+                            } else if (game.team2_stats[key] < game.team1_stats[key]) {
+                                team2Class = "highlight";
+                            }
+                        }
 
-        return `
-            <tr>
-                <td style="padding: 10px; border-bottom: 1px solid white;" class="${team1Class}">
-                    ${team1Value}
-                </td>
-                <td style="padding: 10px; border-bottom: 1px solid white; font-weight: bold;">
-                    ${key}
-                </td>
-                <td style="padding: 10px; border-bottom: 1px solid white;" class="${team2Class}">
-                    ${team2Value}
-                </td>
-            </tr>
-        `;
-    }).join('')}
-</tbody>
-    </table>
-                `;
+                        return `
+                            <tr>
+                                <td style="padding: 10px; border-bottom: 1px solid white;" class="${team1Class}">
+                                    ${team1Value}
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid white; font-weight: bold;">
+                                    ${key}
+                                </td>
+                                <td style="padding: 10px; border-bottom: 1px solid white;" class="${team2Class}">
+                                    ${team2Value}
+                                </td>
+                            </tr>
+                        `;
+                    }).join('')}
+                </tbody>
+                    </table>
+                                `;
     
                 // Show the modal
                 modal.style.display = 'block';
@@ -534,7 +534,7 @@
                 return `${(value * 100).toFixed(0)}%`; 
             }
             return value; 
-}
+        }
     </script>
 
     <script>

@@ -170,9 +170,17 @@ def predict_winner(first_team, second_team, model, db, num_games=10, home_advant
     # Make a single prediction that returns both scores
     predicted_scores = model.predict(combined_df)[0]
 
-    # Round the predicted scores to whole numbers
-    team1_score = round(predicted_scores[0])
-    team2_score = round(predicted_scores[1])
+    # Prevent draws by adding 1 to the higher decimal when rounded scores would be equal
+    if round(predicted_scores[0]) == round(predicted_scores[1]):
+        if predicted_scores[0] > predicted_scores[1]:
+            team1_score = round(predicted_scores[0])
+            team2_score = round(predicted_scores[1]) - 1
+        else:
+            team1_score = round(predicted_scores[0]) - 1
+            team2_score = round(predicted_scores[1])
+    else:
+        team1_score = round(predicted_scores[0])
+        team2_score = round(predicted_scores[1])
 
     # Return team names and predicted scores
     return team_info1['full_name'], team1_score, team_info2['full_name'], team2_score
