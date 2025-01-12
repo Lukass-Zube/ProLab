@@ -315,9 +315,10 @@
         const team2 = "{{ team2 }}"; // Team 2 name from Flask
     
         // Extract dates and scores for the graph
-        const labels = games.map(game => new Date(game.date).toLocaleDateString()); // Format game dates as labels
-        const team1Data = games.map(game => game.team1_score); // Scores for Team 1
-        const team2Data = games.map(game => game.team2_score); // Scores for Team 2 (non-negated for side-by-side)
+        const reversedGames = games.slice().reverse();
+        const labels = reversedGames.map(game => new Date(game.date).toLocaleDateString());
+const team1Data = reversedGames.map(game => game.team1_score);
+const team2Data = reversedGames.map(game => game.team2_score); // Scores for Team 2 (non-negated for side-by-side)
     
         // Initialize the chart
         const ctx = document.getElementById('game-results-graph').getContext('2d');
@@ -352,7 +353,8 @@
                     }
                 },
                 responsive: false,
-                maintainAspectRatio: false
+                maintainAspectRatio: false,
+                
             }
         });
         ctx.canvas.width = 600; // Set the width (e.g., 600px)
