@@ -100,6 +100,15 @@ input[type="submit"]:hover {
             text-align: center;
         }
 
+        .error-message {
+    color: red; /* Make text red */
+    font-size: 0.9em; /* Adjust text size */
+    text-align: center; /* Center-align text */
+    margin-top: 10px; /* Add space between the input field and the error message */
+    display: block; /* Ensure it spans the entire width */
+    width: 100%; /* Make sure it's centered within the form */
+}
+
         button {
             margin-top: 20px;
             padding: 10px 20px;
@@ -114,6 +123,13 @@ input[type="submit"]:hover {
         button:hover {
             background-color: darkorange;
         }
+
+        .button-row {
+    display: flex; /* Align items in a row */
+    justify-content: space-between; /* Align buttons to the right */
+    margin-top: 20px; /* Add spacing above the buttons */
+    gap: 10px; /* Add spacing between the buttons */
+}
 
         .overlay {
             position: fixed;
@@ -225,10 +241,109 @@ input[type="submit"]:hover {
         .custom-option.selected {
             background-color: rgba(255, 255, 255, 0.2);
         }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            color: black;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+        }
+
+        .modal-content {
+            text-align: center;
+            display: flex;
+    flex-direction: column;
+    align-items: center; /* Center all child elements horizontally */
+    justify-content: center; /* Center all child elements vertically (if needed) */
+    padding: 10px;
+    text-align: center;
+        }
+
+        .modal-content button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f49b16;
+            color: white;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #0056b3;
+        }
+
+        .modal-content label {
+    display: block; /* Ensure labels are on their own line */
+    margin-bottom: 5px; /* Add space below the label */
+    text-align: left; /* Align labels to the left */
+}
+
+.modal-content input {
+    display: block; /* Ensure inputs are on their own line */
+    width: 100%; /* Make inputs take full width of the container */
+    margin-bottom: 15px; /* Add space below each input box */
+    padding: 8px; /* Add padding inside the input box for better appearance */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    border-radius: 5px; /* Optional: Make input corners rounded */
+    box-sizing: border-box; /* Include padding in the input's width */
+}
     </style>
 </head>
 <body>
-    <button class="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    <div class="overlay" id="modalOverlay"></div>
+
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <h2>Login</h2>
+            <form id="loginForm" method="post" action="{{ url_for('login') }}">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username">
+                <br>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password">
+                <br>
+                <button type="submit">Login</button>
+            </form>
+            <div id="loginErrorContainer"></div>
+            <p style="font-size: 0.9em; margin-top: 10px; color: gray;">
+                If you don't have an account, 
+                <a href="javascript:void(0)" style="color: blue; text-decoration: underline;" onclick="switchToSignup()">sign up here</a>.
+            </p>
+        </div>
+    </div>
+    
+    <div class="modal" id="signupModal">
+        <div class="modal-content">
+            <h2>Sign Up</h2>
+            <form id="signupForm" method="post" action="{{ url_for('signup') }}">
+                <label for="signup_username">Username:</label>
+                <input type="text" id="signup_username" name="username">
+                
+                <label for="signup_password">Password:</label>
+                <input type="password" id="signup_password" name="password">
+                
+                <div class="button-row">
+                    <button type="button" onclick="switchToLogin()">Back</button>
+                    <button type="submit">Sign Up</button>
+                </div>
+            </form>
+            <div id="signupErrorContainer"></div>
+        </div>
+    </div>
+
+    {% if is_logged_in %}
+        <button class="logout-button" onclick="window.location.href='{{ url_for('logout') }}'">Logout</button>
+    {% endif %}
+
     <div class="overlay" id="overlay"></div>
     <div class="floating-message" id="floatingMessage">
         <p>You need to log in to access this page.</p>
@@ -288,14 +403,6 @@ input[type="submit"]:hover {
     </form>
 
     <script>
-        // Check if the user is logged in
-        const isLoggedIn = {{ 'true' if current_user.is_authenticated else 'false' }};
-
-        if (!isLoggedIn) {
-            // Show the overlay and floating message
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('floatingMessage').style.display = 'block';
-        }
 
         document.addEventListener('DOMContentLoaded', function() {
             // Close all dropdowns when clicking outside
@@ -338,6 +445,78 @@ input[type="submit"]:hover {
                 });
             });
         });
+    </script>
+    <script>
+        // Open a specific modal
+        function openModal(modalId) {
+            document.getElementById('modalOverlay').style.display = 'block';
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    
+        // Close all modals
+        function closeModal() {
+            document.getElementById('modalOverlay').style.display = 'none';
+            document.querySelectorAll('.modal').forEach(modal => modal.style.display = 'none');
+            document.body.style.overflow = ''; 
+        }
+    
+        // Switch from login to signup modal
+        function switchToSignup() {
+            document.getElementById('loginModal').style.display = 'none';
+            openModal('signupModal');
+        }
+    
+        // Switch from signup to login modal
+        function switchToLogin() {
+            document.getElementById('signupModal').style.display = 'none';
+            openModal('loginModal');
+        }
+    
+        // Validation logic for login and signup forms
+        document.addEventListener('DOMContentLoaded', function () {
+        // Custom validation for the login form
+        const loginForm = document.getElementById('loginForm');
+        const passwordInput = document.getElementById('password');
+        const loginErrorContainer = document.createElement('div');
+        loginErrorContainer.className = 'error-message'; // Add error message styling
+        passwordInput.parentNode.insertBefore(loginErrorContainer, passwordInput.nextSibling);
+
+        loginForm.addEventListener('submit', function (e) {
+            loginErrorContainer.innerHTML = ''; // Clear previous errors
+            const username = document.getElementById('username').value.trim();
+            const password = passwordInput.value.trim();
+
+            if (!username || !password) {
+                e.preventDefault();
+                loginErrorContainer.innerHTML = 'Both username and password are required.';
+            }
+        });
+
+        // Custom validation for the signup form
+        const signupForm = document.getElementById('signupForm');
+        const signupPasswordInput = document.getElementById('signup_password');
+        const signupErrorContainer = document.createElement('div');
+        signupErrorContainer.className = 'error-message'; // Add error message styling
+        signupPasswordInput.parentNode.insertBefore(signupErrorContainer, signupPasswordInput.nextSibling);
+
+        signupForm.addEventListener('submit', function (e) {
+            signupErrorContainer.innerHTML = ''; // Clear previous errors
+            const username = document.getElementById('signup_username').value.trim();
+            const password = signupPasswordInput.value.trim();
+
+            if (!username || !password) {
+                e.preventDefault();
+                signupErrorContainer.innerHTML = 'Both username and password are required.';
+            }
+        });
+    });
+    
+        // Automatically open the login modal if the user is not logged in
+        const isLoggedIn = {{ 'true' if is_logged_in else 'false' }};
+        if (!isLoggedIn) {
+            openModal('loginModal');
+        }
     </script>
 </body>
 </html> 

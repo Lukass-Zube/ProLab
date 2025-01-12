@@ -56,25 +56,44 @@ def load_user(user_id):
         return User(user_id)
     return None
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+    username = request.form['username']
+    password = request.form['password']
 
-        if check_user(username, password):
-            login_user(User(username))
-            return redirect('/')
-        else:
-            flash('Invalid username or password')
+    if not username or not password:
+        flash('Both username and password are required.', 'error')
+        return redirect(url_for('home'))
 
-    return render_template('login.html')
+    user = users_collection.find_one({'username': username})
+    if user and bcrypt.check_password_hash(user['password'], password):
+        login_user(User(username))
+        flash('Logged in successfully!')
+        return redirect(url_for('home'))  # Redirect to home after successful login
+    else:
+        flash('Invalid username or password')
+        return redirect(url_for('home'))  # Redirect to reload the page with the login modal
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    username = request.form['username']
+    password = request.form['password']
+
+    if users_collection.find_one({'username': username}):
+        flash('Username already exists. Please choose a different one.')
+        return redirect(url_for('home'))  # Reload the page with the signup modal
+
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    users_collection.insert_one({'username': username, 'password': hashed_password})
+    flash('Account created successfully! Please log in.')
+    return redirect(url_for('home'))
 
 @app.route('/logout')
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('login'))
+    flash('You have been logged out.')
+    return redirect(url_for('home'))
 
 model = joblib.load('basketball_prediction_model_2_team.joblib')
 client = MongoClient(os.getenv('MONGO_URI'))
@@ -84,7 +103,7 @@ db = client['basketball_data']
 def home():
     teams_collection = db['teams']
     teams = list(teams_collection.find({}, {'TEAM_NAME': 1}))  # Fetch team names
-    return render_template('form.html', teams=teams)
+    return render_template('form.html', teams=teams, is_logged_in=current_user.is_authenticated)
 
 @app.route('/prediction', methods=['GET', 'POST'])
 @login_required
@@ -204,24 +223,6 @@ def prediction():
         team2_score=team2_score,
         last_games=consolidated_games
     )
-
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-
-        # Check if the username already exists
-        if users_collection.find_one({'username': username}):
-            flash('Username already exists. Please choose a different one.')
-            return redirect(url_for('signup'))
-
-        # Add the new user to the database
-        add_user(username, password)
-        flash('Account created successfully! Please log in.')
-        return redirect(url_for('login'))
-
-    return render_template('signup.html')
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80, debug=True)
