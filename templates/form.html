@@ -9,7 +9,7 @@
     margin: 0;
     display: flex;
     flex-direction: column; /* Allow vertical stacking */
-    align-items: flex-start; /* Align content to the left */
+    align-items: center; /* Align content to the left */
     background-image: url('https://wallpapers.com/images/hd/jordan-three-point-shot-nba-desktop-2ig8k2t860t39w6b.jpg');
     background-size: cover;       
     background-position: center;    
@@ -19,6 +19,8 @@
     color: white;
     padding: 20px; /* Add padding for some spacing */
 }
+
+
 
         .title {
             font-size: 3rem; /* Larger title */
@@ -34,7 +36,7 @@
 
 form {
     text-align: left;
-    margin: 0; /* Reset any margins */
+    margin: auto; /* Reset any margins */
     width: 100%; /* Take up full available width */
     max-width: 400px; /* Restrict to a reasonable size */
     padding: 20px; /* Add padding inside the form */
@@ -358,7 +360,9 @@ input[type="submit"]:hover {
 
     <div class="title">Ready to predict NBA game score?</div>
 
-    <form action="/prediction" method="post">
+  
+
+    <form action="/prediction" method="post" style="transform: translateX(-150px);">
         <label for="first_team">First Team:</label>
         <div class="custom-select-wrapper">
             <input type="hidden" name="first_team" id="first_team_input">
@@ -406,6 +410,65 @@ input[type="submit"]:hover {
             <div class="error">{{ error_message }}</div>
         {% endif %}
     </form>
+    
+  {% if user_predictions %}
+  <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 30px; margin-bottom: 50px; gap: 20px; width: 100%; max-width: 1200px;">
+    <!-- Last 5 Predictions Table -->
+    <div style="flex: 1;">
+        <h3 style="text-align: left; margin-bottom: 15px; font-size: 1.8rem; font-weight: bold;">
+            Your Last 5 Predictions
+        </h3>
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; color: white; background-color: rgba(0, 0, 0, 0.8);">
+            <thead>
+                <tr style="background: #444; color: #ff9800;">
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Team 1</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Score</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Team 2</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Score</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prediction in user_predictions %}
+                    <tr style="transition: background-color 0.3s; background-color: rgba(255, 255, 255, 0.05);">
+                        <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.team1 }}</td>
+                        <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold; color: #ff9800;">{{ prediction.team1_score | int }}</td>
+                        <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.team2 }}</td>
+                        <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold; color: #ff9800;">{{ prediction.team2_score | int }}</td>
+                        <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.date_saved.strftime('%Y-%m-%d') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- User Summary Table -->
+    <div style="flex: 1;">
+        <h3 style="text-align: left; margin-bottom: 15px; font-size: 1.8rem; font-weight: bold;">
+            User Summary
+        </h3>
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; color: white; background-color: rgba(0, 0, 0, 0.8);">
+            <thead>
+                <tr style="background: #444; color: #ff9800;">
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Category</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Value</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="transition: background-color 0.3s; background-color: rgba(255, 255, 255, 0.05);">
+                    <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold;">Most Used Team</td>
+                    <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); text-align: right;">{{ most_used_team or 'N/A' }}</td>
+                </tr>
+                <tr style="transition: background-color 0.3s; background-color: rgba(255, 255, 255, 0.05);">
+                    <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold;">Most Used Historical Games</td>
+                    <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); text-align: right;">{{ most_used_historical_games or 'N/A' }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+    
+{% endif %}
 
     <script>
 

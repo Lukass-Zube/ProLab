@@ -108,7 +108,41 @@ def logout():
 def home():
     teams_collection = db['teams']
     teams = list(teams_collection.find({}, {'TEAM_NAME': 1}))  # Fetch team names
-    return render_template('form.html', teams=teams, is_logged_in=current_user.is_authenticated)
+    
+    user_predictions = []
+    most_used_team = None
+    most_used_historical_games = None
+
+    if current_user.is_authenticated:
+        # Fetch the last 5 predictions
+        user_predictions = list(saved_predictions.find(
+            {'user_id': current_user.id}
+        ).sort('date_saved', -1).limit(5))
+        
+        # Calculate most used team
+        team_usage = {}
+        for prediction in user_predictions:
+            for team in [prediction['team1'], prediction['team2']]:
+                team_usage[team] = team_usage.get(team, 0) + 1
+        if team_usage:
+            most_used_team = max(team_usage, key=team_usage.get)
+
+        # Calculate most used historical game count
+        game_count_usage = {}
+        for prediction in user_predictions:
+            game_count = prediction.get('game_count', 0)
+            game_count_usage[game_count] = game_count_usage.get(game_count, 0) + 1
+        if game_count_usage:
+            most_used_historical_games = max(game_count_usage, key=game_count_usage.get)
+
+    return render_template(
+        'form.html',
+        teams=teams,
+        is_logged_in=current_user.is_authenticated,
+        user_predictions=user_predictions,
+        most_used_team=most_used_team,
+        most_used_historical_games=most_used_historical_games
+    )
 
 @app.route('/prediction', methods=['GET', 'POST'])
 @login_required
