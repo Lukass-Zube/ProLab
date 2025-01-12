@@ -318,6 +318,39 @@
 
     <canvas id="game-results-graph" width="600" height="400"></canvas>
 
+    <div class="container">
+        <h2>Last five predictions</h2>
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 1rem; color: white; background-color: rgba(0, 0, 0, 0.8);">
+            <thead>
+                <tr style="background: #444; color: #ff9800;">
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Team 1</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Score</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Team 2</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Score</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Game Count</th>
+                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if matching_predictions %}
+                    {% for prediction in matching_predictions %}
+                        <tr style="transition: background-color 0.3s; background-color: rgba(255, 255, 255, 0.05);">
+                            <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.team1 }}</td>
+                            <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold; color: #ff9800;">{{ prediction.team1_score | int }}</td>
+                            <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.team2 }}</td>
+                            <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); font-weight: bold; color: #ff9800;">{{ prediction.team2_score | int }}</td>
+                            <td style="padding: 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">{{ prediction.date_saved.strftime('%Y-%m-%d') }}</td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="padding: 15px; text-align: center;">No matching predictions found.</td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
     <div class="right-panel">
         <button id="savePredictionBtn" onclick="savePrediction()">Save Prediction</button>
         <button onclick="window.location.href='/'">New prediction</button>

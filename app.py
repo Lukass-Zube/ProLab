@@ -168,6 +168,7 @@ def prediction():
     second_team = request.form.get('second_team')
     num_games = request.form.get('historical_game_number')
     
+    matching_predictions = []
     error_message = None
     if not first_team or not second_team or not num_games:
         error_message = "One or more fields haven't been selected"
@@ -180,6 +181,17 @@ def prediction():
     try:
         num_games = int(num_games)
         first_team, first_team_score, second_team, second_team_score = predict_winner(first_team, second_team, model, db, num_games)
+
+        matching_predictions = list(saved_predictions.find(
+            {
+                'team1': first_team,
+                'team2': second_team,
+                'game_count': num_games
+            },
+            {
+                'team1': 1, 'team1_score': 1, 'team2': 1, 'team2_score': 1, 'game_count': 1, 'date_saved': 1
+            }
+        ).sort('date_saved', -1).limit(5))
 
         games_collection = db['games']
         first_team_abbreviation = games_collection.find_one({'TEAM_NAME': first_team})['TEAM_ABBREVIATION']
@@ -262,7 +274,8 @@ def prediction():
         team2=team2,
         team2_score=team2_score,
         last_games=consolidated_games,
-        game_count=num_games
+        game_count=num_games,
+        matching_predictions=matching_predictions
     )
 
 @app.route('/save_prediction', methods=['POST'])
