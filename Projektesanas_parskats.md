@@ -31,10 +31,10 @@ Prognožu analīze: vizuāls prognožu attēlojums
 
 | Servera puse | Klienta puse |
 |--------------|--------------|
-| Programmēšanas valoda: Python | Programmēšanas valoda: HTML |
 | Tīmekļa serveris: Apache | Vide: tīmekļa pārlūks |
-| Satvars: Flask | 
-| Datu bāze: MongoDB |
+| Programmēšanas valoda: Python | Programmēšanas valoda: HTML |
+| Satvars: Flask | Programmēšanas valoda: CSS |
+| Datu bāze: MongoDB | Programmēšanas valoda: JavaScript |
 | OS: Ubuntu |
 | Izvietošana: Azure App Service |
 
