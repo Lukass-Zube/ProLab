@@ -327,7 +327,6 @@
                     <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Score</th>
                     <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Team 2</th>
                     <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Score</th>
-                    <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Game Count</th>
                     <th style="padding: 15px; text-transform: uppercase; font-size: 0.9rem; font-weight: bold;">Date</th>
                 </tr>
             </thead>
@@ -351,11 +350,14 @@
         </table>
     </div>
 
-    <div class="right-panel">
+    <div id="successMessage" style="display: none; color: green; font-size: 1.2em; margin-bottom: 10px; text-align: center;">
+        Prediction saved successfully!
+    </div>
+    <div class="right-panel" style="display: flex; flex-direction: row; align-items: center; gap: 10px;">
         <button id="savePredictionBtn" onclick="savePrediction()">Save Prediction</button>
         <button onclick="window.location.href='/'">New prediction</button>
     </div>
-
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
@@ -572,27 +574,43 @@
 
     <script>
     async function savePrediction() {
-        const response = await fetch('/save_prediction', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: new URLSearchParams({
-                'team1': '{{ team1 }}',
-                'team1_score': '{{ team1_score }}',
-                'team2': '{{ team2 }}',
-                'team2_score': '{{ team2_score }}',
-                'game_count': '{{ game_count }}'
-            })
-        });
+    const successMessageDiv = document.getElementById('successMessage'); // Fix reference
+    const response = await fetch('/save_prediction', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+            'team1': '{{ team1 }}',
+            'team1_score': '{{ team1_score }}',
+            'team2': '{{ team2 }}',
+            'team2_score': '{{ team2_score }}',
+            'game_count': '{{ game_count }}'
+        })
+    });
 
-        const data = await response.json();
-        if (data.success) {
-            alert(data.message);
-        } else {
-            alert('Error saving prediction');
-        }
+    const data = await response.json();
+
+    if (data.success) {
+        successMessageDiv.textContent = data.message || 'Prediction saved successfully!';
+        successMessageDiv.style.color = 'green';
+        successMessageDiv.style.display = 'block';
+
+        // Hide the message after 3 seconds
+        setTimeout(() => {
+            successMessageDiv.style.display = 'none';
+        }, 3000);
+    } else {
+        successMessageDiv.textContent = 'Error saving prediction. Please try again.';
+        successMessageDiv.style.color = 'red';
+        successMessageDiv.style.display = 'block';
+
+        // Hide the message after 3 seconds
+        setTimeout(() => {
+            successMessageDiv.style.display = 'none';
+        }, 3000);
     }
+}
     </script>
 </body>
 </html>
