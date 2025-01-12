@@ -5,80 +5,89 @@
     <title>Input Form</title>
     <style>
         body, html {
-            height: 100%;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-image: url('https://wallpapers.com/images/hd/jordan-three-point-shot-nba-desktop-2ig8k2t860t39w6b.jpg');
-            background-size: cover;       
-            background-position: center;    
-            background-repeat: no-repeat;   
-            background-attachment: fixed;
-            font-family: 'Roboto', sans-serif;
-            color: white;
-        }
-
-        form {
-            text-align: left;
-            position: absolute;
-            top: 50%;
-            left: 15%;
-            transform: translateY(-50%);
-            width: 30vw; 
-            min-width: 300px;
-            background-color: rgba(0, 0, 0, 0.6); /* Add a translucent background */
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
-        }
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column; /* Allow vertical stacking */
+    align-items: flex-start; /* Align content to the left */
+    background-image: url('https://wallpapers.com/images/hd/jordan-three-point-shot-nba-desktop-2ig8k2t860t39w6b.jpg');
+    background-size: cover;       
+    background-position: center;    
+    background-repeat: no-repeat;   
+    background-attachment: fixed;
+    font-family: 'Roboto', sans-serif;
+    color: white;
+    padding: 20px; /* Add padding for some spacing */
+}
 
         .title {
-            font-size: 3rem; /* Make the title larger */
-            font-weight: bold;
-            color: white;
-            text-align: center;
-            margin-bottom: 20px; /* Space below the title */
-            position: absolute;
-            -webkit-text-stroke: 0.2px #000000; /* Orange border */
-            -webkit-text-fill-color: white;
-            text-shadow: 0px 4px 10px rgb(2, 2, 2);
-            top: 15%;
-        }
+            font-size: 3rem; /* Larger title */
+    font-weight: bold;
+    color: white;
+    text-align: left; /* Align title to the left */
+    margin-bottom: 20px; /* Space below the title */
+    -webkit-text-stroke: 0.2px #000000;
+    -webkit-text-fill-color: white;
+    text-shadow: 0px 4px 10px rgb(2, 2, 2);
+    width: 100%; /* Include padding in width calculations */
+}
+
+form {
+    text-align: left;
+    margin: 0; /* Reset any margins */
+    width: 100%; /* Take up full available width */
+    max-width: 400px; /* Restrict to a reasonable size */
+    padding: 20px; /* Add padding inside the form */
+    border-radius: 10px;
+    background-color: transparent;
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2rem; /* Adjust title size for smaller screens */
+    }
+
+    label, select, input[type="submit"] {
+        font-size: 1rem; /* Adjust input and label sizes */
+    }
+}
 
         label {
             font-weight: bold;
-            font-size: 1.7vw; 
-            margin-bottom: 10px;
-            display: block;
+    font-size: 1.2rem; 
+    margin-bottom: 10px;
+    display: block;
         }
 
         select, input[type="submit"] {
-            font-size: 1.5vw; 
-            padding: 1vw; 
-            margin-bottom: 20px;
-            width: 100%; 
-            box-sizing: border-box;
-            border: none;
-            border-radius: 5px;
-            background-color: rgb(45, 44, 44);
-            color: white;
-            border: 1px solid white;
-            outline: none;
-            transition: border-color 0.3s;
+            font-size: 1.1rem; 
+    padding: 10px; 
+    margin-bottom: 20px;
+    width: 100%; 
+    box-sizing: border-box;
+    border: none;
+    border-radius: 5px;
+    background-color: rgb(45, 44, 44);
+    color: white;
+    border: 1px solid white;
+    outline: none;
+    transition: border-color 0.3s;
+    
         }
+
+        
 
         input[type="submit"] {
-            background-color: #f49b16;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease; 
-        }
+    background-color: #f49b16;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; 
+}
 
-        input[type="submit"]:hover {
-            background-color: #0056b3;
-            transform: scale(1.05); 
-        }
+input[type="submit"]:hover {
+    background-color: #0056b3;
+    transform: scale(1.05); 
+}
 
         select option[hidden] {
             display: none;
