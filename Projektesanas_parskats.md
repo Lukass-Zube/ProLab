@@ -43,8 +43,8 @@ Prognožu analīze: vizuāls prognožu attēlojums
 
 | Nr. | Lietotāja stāsti | Izpildīts (Jā/Nē)| Komentārs
 |--|-------|---|-------
-|1.|Lietotājs vēlas saņemt precīzu rezultāta prognozi par basketbola spēlēm, jo tas palīdzēs pieņemt labākus lēmumus likmju likšanā un palielināt ienākumus.|---|-------|
-2.|Lietotājs vēlas, lai dati tiktu attēloti grafiski, jo tas padarīs informāciju vieglāk uztveramu un analizējamu.|---|-------|
-3.|Lietotājs vēlas autentificēties sistēmā, jo tas nodrošinās darījumu un prognožu vēstures saglabāšanu.|---|-------|
-4.|Lietotājs vēlas intuitīvi saprotamu mājas lapu, jo tā nodrošinās vieglu piekļuvi informācijai un uzlabos lietotāja pieredzi.|---|-------|
-5.|Sporta organizācija vēlas prognozēt basketbola spēļu rezultātus, jo tas palīdzēs analizēt pretinieku spēku un uzlabot spēļu stratēģiju.|---|-------|
+|1.|Lietotājs vēlas saņemt precīzu rezultāta prognozi par basketbola spēlēm, jo tas palīdzēs pieņemt labākus lēmumus likmju likšanā un palielināt ienākumus.|Jā|Algoritms ir izveidots, lai nodrošinātu precīzu prognožu aprēķinu, izmantojot vēsturiskos datus|
+2.|Lietotājs vēlas, lai dati tiktu attēloti grafiski, jo tas padarīs informāciju vieglāk uztveramu un analizējamu.|Jā|Ir pievienoti grafiki, kas atvieglo datu analīzi un lietotāja pieredzi.|
+3.|Lietotājs vēlas autentificēties sistēmā, jo tas nodrošinās darījumu un prognožu vēstures saglabāšanu.|Jā|Sistēmā ir ieviesta droša lietotāja autentifikācija|
+4.|Lietotājs vēlas intuitīvi saprotamu mājas lapu, jo tā nodrošinās vieglu piekļuvi informācijai un uzlabos lietotāja pieredzi.|Jā|Mājas lapa ir izstrādāta ar vienkāršu un intuitīvu navigāciju, lai lietotāji varētu viegli atrast nepieciešamo informāciju.|
+5.|Sporta organizācija vēlas prognozēt basketbola spēļu rezultātus, jo tas palīdzēs analizēt pretinieku spēku un uzlabot spēļu stratēģiju.|Jā||
