@@ -101,5 +101,9 @@ Lietotnes saskarne ir viegli saprotama un piedāvā lietotājiem iespēju izvēl
 
 Veidojot šo projektu, mēs apguvām jaunas tehnoloģijas, metodes un procesus, lai radītu funkcionālu un lietderīgu risinājumu. Papildu pilnveidojumi nākotnē varētu padarīt lietotnes darbību vēl labāku un lietotājam draudzīgāku.
 
+# Plakāts
+
+![image](https://github.com/user-attachments/assets/e9a76d44-3e4b-4a73-9dcb-f909a2a8b1d4)
+
 
 
